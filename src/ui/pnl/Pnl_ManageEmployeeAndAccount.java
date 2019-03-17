@@ -21,7 +21,6 @@ import javax.swing.table.DefaultTableModel;
 
 import ui.component.BoxComponent;
 import ui.pnl.component.Pnl_ManageAccount;
-import ui.pnl.component.Pnl_ManageEmployee;
 
 public class Pnl_ManageEmployeeAndAccount extends JPanel {
 

@@ -61,7 +61,7 @@ public class Frm_Login extends JFrame implements ActionListener {
 			this.dispose();
 		}
 		else if(o.equals(btnLogin)) {
-			Frm_ManageHotel_SuperAdmin frm = new Frm_ManageHotel_SuperAdmin();
+			Frm_ManageHotel_Admin frm = new Frm_ManageHotel_Admin();
 			frm.setVisible(true);
 			this.dispose();
 		}

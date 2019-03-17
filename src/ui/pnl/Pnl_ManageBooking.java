@@ -42,7 +42,7 @@ import ui.frm.Frm_Payment;
 
 public class Pnl_ManageBooking extends JPanel implements ActionListener {
 
-	private Font fontSan = new Font("Arial", Font.BOLD, 18);
+	private Font fontSan = new Font("Arial", Font.BOLD, 14);
 
 	private JLabel lbl_booking_id, lbl_quantity_room, 
 			lbl_quantity_category, lbl_subtotal, 
@@ -344,6 +344,7 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 		Box b3 = BoxComponent.getVerticalBox(b_quantity_room, b_customer, 10);
 		
 		Box b_info = BoxComponent.getHorizontalBox_NoPadding(b1, b2, b3, 30);
+		b_info.setPreferredSize(new Dimension(b_info.getPreferredSize().width, 80));
 
 		// Button
 		Box b_button = Box.createHorizontalBox();
@@ -370,11 +371,19 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 		pnl_detail.add(bv_detail);
 
 		// FULL
-		Box bv_full = BoxComponent.getVerticalBox(b_info, b_button, pnl_booking, pnl_detail, 10);
-		Box bh_full = BoxComponent.getHorizontalBox(bv_full, 10);
+		Box bv_full = Box.createVerticalBox();
+		bv_full.add(pnl_header);
+		bv_full.add(Box.createVerticalStrut(10));
+		bv_full.add(BoxComponent.getHorizontalBox(b_info, 10));
+		bv_full.add(Box.createVerticalStrut(10));
+		bv_full.add(BoxComponent.getHorizontalBox(b_button, 10));
+		bv_full.add(Box.createVerticalStrut(10));
+		bv_full.add(BoxComponent.getHorizontalBox(pnl_booking, 10));
+		bv_full.add(Box.createVerticalStrut(10));
+		bv_full.add(BoxComponent.getHorizontalBox(pnl_detail, 10));
+		bv_full.add(Box.createVerticalStrut(10));
 
-		this.add(pnl_header, BorderLayout.NORTH);
-		pnl_body.add(bh_full);
+		pnl_body.add(bv_full);
 		this.add(BoxComponent.getVerticalBox(BoxComponent.getHorizontalBox(pnl_body, 10), 10));
 	}
 

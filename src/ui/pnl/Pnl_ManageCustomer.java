@@ -8,6 +8,7 @@ import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -23,13 +24,14 @@ import ui.component.BoxComponent;
 
 public class Pnl_ManageCustomer extends JPanel {
 
-	private Font fontSan = new Font("Arial", Font.BOLD, 18);
+	private Font fontSan = new Font("Arial", Font.BOLD, 14);
 
 	private JLabel lbl_id, lbl_first_name, lbl_middle_name, lbl_last_name, lbl_address, lbl_gender, lbl_phone,
-			lbl_date_of_birth, lbl_account;
+			lbl_date_of_birth, lbl_account, lbl_person_code;
 	private JTextField txt_id, txt_first_name, txt_middle_name, txt_last_name, txt_address, txt_phone,
-			txt_date_of_birth, txt_account;
+			txt_date_of_birth, txt_account, txt_person_code;
 	private JRadioButton rb_male, rb_female;
+	private ButtonGroup bg;
 	private JButton btn_add, btn_update, btn_save, btn_load, btn_delete;
 	private JTable tbl_customer;
 	private DefaultTableModel tbl_model_customer;
@@ -61,20 +63,21 @@ public class Pnl_ManageCustomer extends JPanel {
 		lbl_first_name = new JLabel("Họ:");
 		lbl_middle_name = new JLabel("Tên lót:");
 		lbl_last_name = new JLabel("Tên");
-		lbl_address = new JLabel("Địa chỉ");
+		lbl_address = new JLabel("Địa chỉ:");
 		lbl_gender = new JLabel("Giới tính:");
 		lbl_phone = new JLabel("Số điện thoại:");
 		lbl_date_of_birth = new JLabel("Ngày sinh:");
-		lbl_account = new JLabel("Tài khoản:");
+		lbl_account = new JLabel("Tài khoản VIP:");
+		lbl_person_code = new JLabel("Chứng minh nhân dân:");
 
 		lbl_first_name.setPreferredSize(lbl_id.getPreferredSize());
 		lbl_middle_name.setPreferredSize(lbl_id.getPreferredSize());
 		lbl_last_name.setPreferredSize(lbl_id.getPreferredSize());
 		lbl_address.setPreferredSize(lbl_id.getPreferredSize());
 
-		lbl_gender.setPreferredSize(lbl_phone.getPreferredSize());
-		lbl_date_of_birth.setPreferredSize(lbl_phone.getPreferredSize());
-		lbl_account.setPreferredSize(lbl_phone.getPreferredSize());
+		lbl_phone.setPreferredSize(lbl_person_code.getPreferredSize());
+		lbl_date_of_birth.setPreferredSize(lbl_person_code.getPreferredSize());
+		lbl_account.setPreferredSize(lbl_person_code.getPreferredSize());
 
 		// JTextField
 		txt_account = new JTextField();
@@ -85,11 +88,16 @@ public class Pnl_ManageCustomer extends JPanel {
 		txt_address = new JTextField();
 		txt_phone = new JTextField();
 		txt_date_of_birth = new JTextField();
+		txt_person_code = new JTextField();
 
 		// JRadioButton
 		rb_male = new JRadioButton("Nam");
 		rb_male.setSelected(true);
 		rb_female = new JRadioButton("Nữ");
+		
+		bg = new ButtonGroup();
+		bg.add(rb_female);
+		bg.add(rb_male);
 
 		// JButton
 		btn_add = new JButton(new ImageIcon("imgs/ic_add.png"));
@@ -113,7 +121,7 @@ public class Pnl_ManageCustomer extends JPanel {
 		btn_save.setBorder(null);
 
 		// JTable
-		String[] header = { "Mã số", "Họ và tên", "Giới tính", "Ngày sinh", "Số điện thoại", "Tài khoản" };
+		String[] header = { "Mã số", "Họ và tên", "Giới tính", "Ngày sinh", "Số điện thoại", "CMND" };
 		tbl_customer = new JTable(tbl_model_customer = new DefaultTableModel(header, 0));
 
 		// JScrollPane
@@ -133,9 +141,12 @@ public class Pnl_ManageCustomer extends JPanel {
 		Box b_birthday = BoxComponent.getHorizontalBox(lbl_date_of_birth, txt_date_of_birth, 10);
 		Box b_phone = BoxComponent.getHorizontalBox(lbl_phone, txt_phone, 10);
 		Box b_account = BoxComponent.getHorizontalBox(lbl_account, txt_account, 10);
+		Box b_person_code = BoxComponent.getHorizontalBox(lbl_person_code, txt_person_code, 10);
+		
+		Box b_gender_person_code = BoxComponent.getHorizontalBox_NoPadding(b_person_code, b_gender, 20);
 
 		Box b_left = BoxComponent.getVerticalBox(b_id, b_first, b_middle, b_last, 10);
-		Box b_right = BoxComponent.getVerticalBox(b_gender, b_birthday, b_phone, b_account, 10);
+		Box b_right = BoxComponent.getVerticalBox(b_gender_person_code, b_birthday, b_phone, b_account, 10);
 
 		Box bh_info = BoxComponent.getHorizontalBox_NoPadding(b_left, b_right, 40);
 		Box bv_info = Box.createVerticalBox();
@@ -143,6 +154,7 @@ public class Pnl_ManageCustomer extends JPanel {
 		bv_info.add(Box.createVerticalStrut(10));
 		bv_info.add(b_address);
 		bv_info.setMaximumSize(new Dimension(1200, 200));
+		bv_info.setPreferredSize(new Dimension(bv_info.getPreferredSize().width, 200));
 
 		// Button
 		Box b_button = Box.createHorizontalBox();
@@ -173,16 +185,12 @@ public class Pnl_ManageCustomer extends JPanel {
 		bv_full.add(bv_info);
 		bv_full.add(Box.createVerticalStrut(20));
 		bv_full.add(b_button);
-		bv_full.add(Box.createVerticalStrut(20));
-		bv_full.add(pnl);
 		bv_full.add(Box.createVerticalStrut(10));
 		Box bh_full = BoxComponent.getHorizontalBox(bv_full, 10);
 
-		add(pnl_header, BorderLayout.NORTH);
-		
-		pnl_body.add(bh_full);
-		add(BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(pnl_body, 10), 10));
-		
+		pnl_body.add(BoxComponent.getVerticalBox(pnl_header, bh_full, 0));
+		add(BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(pnl, 10), 10));
+		add(BoxComponent.getHorizontalBox(pnl_body, 0), BorderLayout.NORTH);
 	}
 
 }

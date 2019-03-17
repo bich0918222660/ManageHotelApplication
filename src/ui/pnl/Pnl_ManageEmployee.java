@@ -1,4 +1,4 @@
-package ui.pnl.component;
+package ui.pnl;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -11,6 +11,7 @@ import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -27,15 +28,18 @@ public class Pnl_ManageEmployee extends JPanel {
 	private Font fontSan = new Font("Arial", Font.BOLD, 18);
 
 	private JLabel lbl_id, lbl_first_name, lbl_middle_name, lbl_last_name, lbl_address, lbl_gender, lbl_phone,
-			lbl_date_of_birth, lbl_account, lbl_position;
+			lbl_date_of_birth, lbl_account, lbl_person_code, lbl_position;
 	private JTextField txt_id, txt_first_name, txt_middle_name, txt_last_name, txt_address, txt_phone,
 			txt_date_of_birth, txt_account, txt_position;
+	private JComboBox<String> cbx_position;
 	private JRadioButton rb_male, rb_female;
 	private ButtonGroup bg;
 	private JButton btn_add, btn_update, btn_save, btn_load, btn_delete;
 	private JTable tbl_employee;
 	private DefaultTableModel tbl_model_employee;
 	private JScrollPane jsp_employee;
+
+	private JPanel pnl_header;
 
 	public Pnl_ManageEmployee() {
 		setLayout(new BorderLayout());
@@ -46,6 +50,12 @@ public class Pnl_ManageEmployee extends JPanel {
 	}
 
 	private void init() {
+		// Jpanel
+		pnl_header = new JPanel(new BorderLayout());
+		JLabel lbl = new JLabel();
+		lbl.setIcon(new ImageIcon("imgs/rose.jpeg"));
+		pnl_header.add(lbl);
+		
 		// JLabel
 		lbl_id = new JLabel("Mã khách hàng:");
 		lbl_first_name = new JLabel("Họ:");
@@ -56,6 +66,7 @@ public class Pnl_ManageEmployee extends JPanel {
 		lbl_phone = new JLabel("Số điện thoại:");
 		lbl_date_of_birth = new JLabel("Ngày sinh:");
 		lbl_account = new JLabel("Tài khoản:");
+		lbl_person_code = new JLabel("Chứng minh nhân dân:");
 		lbl_position = new JLabel("Vị trí:");
 
 		lbl_first_name.setPreferredSize(lbl_id.getPreferredSize());
@@ -63,9 +74,9 @@ public class Pnl_ManageEmployee extends JPanel {
 		lbl_last_name.setPreferredSize(lbl_id.getPreferredSize());
 		lbl_address.setPreferredSize(lbl_id.getPreferredSize());
 
-		lbl_gender.setPreferredSize(lbl_phone.getPreferredSize());
 		lbl_date_of_birth.setPreferredSize(lbl_phone.getPreferredSize());
 		lbl_account.setPreferredSize(lbl_phone.getPreferredSize());
+		lbl_position.setPreferredSize(lbl_phone.getPreferredSize());
 
 		// JTextField
 		txt_account = new JTextField();
@@ -77,6 +88,13 @@ public class Pnl_ManageEmployee extends JPanel {
 		txt_phone = new JTextField();
 		txt_date_of_birth = new JTextField();
 		txt_position = new JTextField();
+		
+		// JComboBox
+		cbx_position = new JComboBox<>();
+		cbx_position.addItem("Tiếp tân");
+		cbx_position.addItem("Quản lý");
+		cbx_position.addItem("Quản trị viên");
+		cbx_position.setPreferredSize(new Dimension(250, cbx_position.getPreferredSize().height));
 
 		// JRadioButton
 		rb_male = new JRadioButton("Nam");
@@ -121,7 +139,7 @@ public class Pnl_ManageEmployee extends JPanel {
 	private void gui() {
 		// Info
 		Box b_id = BoxComponent.getHorizontalBox(lbl_id, txt_id, 10);
-		Box b_postion = BoxComponent.getHorizontalBox(lbl_position, txt_position, 10);
+		Box b_person_code = BoxComponent.getHorizontalBox(lbl_person_code, txt_position, 10);
 		Box b_first = BoxComponent.getHorizontalBox(lbl_first_name, txt_first_name, 10);
 		Box b_middle = BoxComponent.getHorizontalBox(lbl_middle_name, txt_middle_name, 10);
 		Box b_last = BoxComponent.getHorizontalBox(lbl_last_name, txt_last_name, 10);
@@ -130,19 +148,27 @@ public class Pnl_ManageEmployee extends JPanel {
 		Box b_birthday = BoxComponent.getHorizontalBox(lbl_date_of_birth, txt_date_of_birth, 10);
 		Box b_phone = BoxComponent.getHorizontalBox(lbl_phone, txt_phone, 10);
 		Box b_account = BoxComponent.getHorizontalBox(lbl_account, txt_account, 10);
+		Box b_postion = BoxComponent.getHorizontalBox(lbl_position, cbx_position, 10);
 
-		Box b_top_info = BoxComponent.getHorizontalBox_NoPadding(b_id, b_postion, b_gender, 30);
-		Box b_left = BoxComponent.getVerticalBox(b_first, b_middle, b_last, 10);
-		Box b_right = BoxComponent.getVerticalBox(b_birthday, b_phone, b_account, 10);
-
-		Box bh_info = BoxComponent.getHorizontalBox_NoPadding(b_left, b_right, 40);
+		Box b1 = BoxComponent.getHorizontalBox_NoPadding(b_id, b_person_code, b_gender, 30);
+		Box b2 = BoxComponent.getHorizontalBox_NoPadding(b_first, b_birthday, 30);
+		Box b3 = BoxComponent.getHorizontalBox_NoPadding(b_middle, b_phone, 30);
+		Box b4 = BoxComponent.getHorizontalBox_NoPadding(b_last, b_account, 30);
+		Box b5 = BoxComponent.getHorizontalBox_NoPadding(b_address, b_postion, 30);
 
 		Box bv_info = Box.createVerticalBox();
-		bv_info.add(b_top_info);
 		bv_info.add(Box.createVerticalStrut(10));
-		bv_info.add(bh_info);
+		bv_info.add(b1);
 		bv_info.add(Box.createVerticalStrut(10));
-		bv_info.add(b_address);
+		bv_info.add(b2);
+		bv_info.add(Box.createVerticalStrut(10));
+		bv_info.add(b3);
+		bv_info.add(Box.createVerticalStrut(10));
+		bv_info.add(b4);
+		bv_info.add(Box.createVerticalStrut(10));
+		bv_info.add(b5);
+		bv_info.add(Box.createVerticalStrut(10));
+		bv_info.setPreferredSize(new Dimension(bv_info.getPreferredSize().width, 200));
 		
 		// Button
 		Box b_button = Box.createHorizontalBox();
@@ -169,14 +195,14 @@ public class Pnl_ManageEmployee extends JPanel {
 
 		// Full
 		Box bv_full = Box.createVerticalBox();
-		bv_full.add(bv_info);
+		bv_full.add(pnl_header);
+		bv_full.add(Box.createVerticalStrut(10));
+		bv_full.add(BoxComponent.getHorizontalBox(bv_info, 10));
 		bv_full.add(Box.createVerticalStrut(20));
-		bv_full.add(b_button);
-		bv_full.add(Box.createVerticalStrut(20));
-		bv_full.add(pnl);
-		Box bh_full = BoxComponent.getHorizontalBox(bv_full, 10);
+		bv_full.add(BoxComponent.getHorizontalBox(b_button, 10));
 
-		add(bh_full);
+		add(BoxComponent.getHorizontalBox(pnl, 10));
+		add(bv_full, BorderLayout.NORTH);
 	}
 
 }

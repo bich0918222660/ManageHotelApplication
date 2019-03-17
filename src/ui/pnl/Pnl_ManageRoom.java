@@ -1,4 +1,4 @@
-package ui.pnl.component;
+package ui.pnl;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -35,6 +35,8 @@ public class Pnl_ManageRoom extends JPanel {
 	private DefaultTableModel tbl_model_room;
 	private JScrollPane jsp_room;
 
+	private JPanel pnl_header;
+
 	public Pnl_ManageRoom() {
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createTitledBorder(null, "Quản lý thông tin phòng:", TitledBorder.LEFT, TitledBorder.TOP,
@@ -44,7 +46,12 @@ public class Pnl_ManageRoom extends JPanel {
 	}
 
 	private void init() {
-
+		// Jpanel
+		pnl_header = new JPanel(new BorderLayout());
+		JLabel lbl = new JLabel();
+		lbl.setIcon(new ImageIcon("imgs/rose.jpeg"));
+		pnl_header.add(lbl);
+		
 		// JLabel
 		lbl_id = new JLabel("Mã phòng:");
 		lbl_position = new JLabel("Vị trí phòng:");
@@ -52,7 +59,7 @@ public class Pnl_ManageRoom extends JPanel {
 		lbl_category = new JLabel("Loại phòng:");
 
 		lbl_id.setPreferredSize(lbl_category.getPreferredSize());
-		lbl_position.setPreferredSize(lbl_status.getPreferredSize());
+		lbl_status.setPreferredSize(lbl_position.getPreferredSize());
 
 		// JTextField
 		txt_id = new JTextField();
@@ -98,8 +105,7 @@ public class Pnl_ManageRoom extends JPanel {
 
 	}
 
-	private void gui() {
-
+	private void gui() {		
 		// Info
 		Box b_id = BoxComponent.getHorizontalBox(lbl_id, txt_id, 10);
 		Box b_category = BoxComponent.getHorizontalBox(lbl_category, cbx_categories, 10);
@@ -110,6 +116,7 @@ public class Pnl_ManageRoom extends JPanel {
 		Box bv_right = BoxComponent.getVerticalBox(b_position, b_status, 10);
 
 		Box bh_info = BoxComponent.getHorizontalBox_NoPadding(bv_left, bv_right, 40);
+		bh_info.setPreferredSize(new Dimension(bh_info.getPreferredSize().width, 82));
 
 		// Button
 		Box b_button = Box.createHorizontalBox();
@@ -135,9 +142,10 @@ public class Pnl_ManageRoom extends JPanel {
 		pnl.add(bv);
 
 		// Full
-		Box bv_full = BoxComponent.getVerticalBox(bh_info, b_button, pnl, 10);
+		Box bv_full = BoxComponent.getVerticalBox(b_button, pnl, 10);
 		Box bh_full = BoxComponent.getHorizontalBox(bv_full, 10);
 
 		add(bh_full);
+		add(BoxComponent.getVerticalBox(pnl_header, bh_info, 0), BorderLayout.NORTH);
 	}
 }

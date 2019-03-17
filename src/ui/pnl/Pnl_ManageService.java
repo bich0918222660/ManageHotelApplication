@@ -1,4 +1,4 @@
-package ui.pnl.component;
+package ui.pnl;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -33,6 +33,8 @@ public class Pnl_ManageService extends JPanel {
 	private JTable tbl_service;
 	private DefaultTableModel tbl_model_service;
 	private JScrollPane jsp_service;
+
+	private JPanel pnl_header;
 	
 	public Pnl_ManageService() {
 		setLayout(new BorderLayout());
@@ -42,6 +44,12 @@ public class Pnl_ManageService extends JPanel {
 	}
 	
 	private void init() {
+		// Jpanel
+		pnl_header = new JPanel(new BorderLayout());
+		JLabel lbl = new JLabel();
+		lbl.setIcon(new ImageIcon("imgs/rose.jpeg"));
+		pnl_header.add(lbl);
+				
 		// JLabel
 		lbl_description = new JLabel("Mô tả:");
 		lbl_service_name = new JLabel("Tên dịch vụ:");
@@ -99,10 +107,11 @@ public class Pnl_ManageService extends JPanel {
 		Box b_desc = BoxComponent.getHorizontalBox(lbl_description, txt_description, 10);
 		
 		Box b_info = BoxComponent.getVerticalBox(b2, b_desc, 10);
+		b_info.setPreferredSize(new Dimension(b_info.getPreferredSize().width, 120));
 		
 		// Button
 		Box b_button = Box.createHorizontalBox();
-		b_button.add(Box.createHorizontalStrut(1000));
+		b_button.add(Box.createHorizontalStrut(970));
 		b_button.add(btn_add);
 		b_button.add(Box.createHorizontalStrut(15));
 		b_button.add(btn_update);
@@ -121,9 +130,10 @@ public class Pnl_ManageService extends JPanel {
 		pnl.add(bv);
 		
 		// Full
-		Box bv_full = BoxComponent.getVerticalBox(b_info, b_button, pnl, 10);
+		Box bv_full = BoxComponent.getVerticalBox(b_button, pnl, 10);
 		Box bh_full = BoxComponent.getHorizontalBox(bv_full, 10);
 		
 		add(bh_full);
+		add(BoxComponent.getVerticalBox(pnl_header, b_info, 0), BorderLayout.NORTH);
 	}
 }

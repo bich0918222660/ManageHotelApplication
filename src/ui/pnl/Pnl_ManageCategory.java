@@ -1,4 +1,4 @@
-package ui.pnl.component;
+package ui.pnl;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -24,7 +24,7 @@ import ui.component.BoxComponent;
 
 public class Pnl_ManageCategory extends JPanel {
 
-	private Font fontSan = new Font("Arial", Font.BOLD, 18);
+	private Font fontSan = new Font("Arial", Font.BOLD, 14);
 
 	private JLabel lbl_id, lbl_name, lbl_price, lbl_description, lbl_discount, lbl_image, lbl_type, lbl_image_url;
 	private JTextField txt_id, txt_name, txt_price, txt_discount;
@@ -35,6 +35,8 @@ public class Pnl_ManageCategory extends JPanel {
 	private DefaultTableModel tbl_model_category;
 	private JScrollPane jsp_category;
 
+	private JPanel pnl_header;
+
 	public Pnl_ManageCategory() {
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createTitledBorder(null, "Quản lý loại phòng:", TitledBorder.LEFT, TitledBorder.TOP,
@@ -44,6 +46,12 @@ public class Pnl_ManageCategory extends JPanel {
 	}
 
 	private void init() {
+		// Jpanel
+		pnl_header = new JPanel(new BorderLayout());
+		JLabel lbl = new JLabel();
+		lbl.setIcon(new ImageIcon("imgs/rose.jpeg"));
+		pnl_header.add(lbl);
+				
 		// JLabel
 		lbl_id = new JLabel("Mã loại:");
 		lbl_name = new JLabel("Tên loại:");
@@ -124,6 +132,7 @@ public class Pnl_ManageCategory extends JPanel {
 		Box b_right = BoxComponent.getVerticalBox(b_price, b_discount, b_image, 10);
 
 		Box bh_info = BoxComponent.getHorizontalBox_NoPadding(b_left, b_right, 50);
+		bh_info.setPreferredSize(new Dimension(bh_info.getPreferredSize().width, 120));
 
 		// Button
 		Box b_button = Box.createHorizontalBox();
@@ -149,10 +158,11 @@ public class Pnl_ManageCategory extends JPanel {
 		pnl.add(bv);
 
 		// Full
-		Box bv_full = BoxComponent.getVerticalBox(bh_info, b_button, pnl, 10);
+		Box bv_full = BoxComponent.getVerticalBox(b_button, pnl, 10);
 		Box bh_full = BoxComponent.getHorizontalBox(bv_full, 10);
 
 		add(bh_full);
+		add(BoxComponent.getVerticalBox(pnl_header, bh_info, 0), BorderLayout.NORTH);
 	}
 
 }
