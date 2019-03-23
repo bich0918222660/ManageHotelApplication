@@ -28,6 +28,7 @@ import javax.swing.table.DefaultTableModel;
 import dao.AccountDAO;
 import entity.Account;
 import ui.component.BoxComponent;
+import ui.service.ValidationService;
 
 public class Pnl_ManageAccount extends JPanel implements ActionListener {
 
@@ -91,6 +92,10 @@ public class Pnl_ManageAccount extends JPanel implements ActionListener {
 			e.printStackTrace();
 		}
 	}
+	
+//	private String getPassword(String password) {
+//		password.sp
+//	}
 
 	private void init() {
 		// Jpanel
@@ -221,20 +226,25 @@ public class Pnl_ManageAccount extends JPanel implements ActionListener {
 		}
 		else if(o.equals(btn_update)) {
 			setEditable(true);
+			txt_username.setEditable(false);
 			btn_add.setEnabled(true);
 		}
 		else if(o.equals(btn_save)) {
-			if(btn_add.isEnabled()) {
-				if(username.equals("") && password.equals("") && role.equals("")) {
-					add(username, password, role);
+			if(!btn_add.isEnabled()) {
+				if(!username.equals("") && !password.equals("") && !role.equals("")) {
+					if(ValidationService.validateUsername(username) && ValidationService.validatePassword(password)) {
+						add(username, password, role);
+					}
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Bạn chưa nhập đầy đủ thông tin!");
 				}
 			}
 			else {
-				if(username.equals("") && password.equals("") && role.equals("")) {
-					update(username, password, role);
+				if(!username.equals("") && !password.equals("") && !role.equals("")) {
+					if(ValidationService.validateUsername(username) && ValidationService.validatePassword(password)) {
+						update(username, password, role);
+					}
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Bạn chưa nhập đầy đủ thông tin!");
@@ -252,13 +262,27 @@ public class Pnl_ManageAccount extends JPanel implements ActionListener {
 	}
 	
 	private void add(String username, String password, String role) {
-		try {
-			adao.insert(new Account(username, password, role));
-			JOptionPane.showMessageDialog(null, "Thêm mới tài khoản thành công!");
-			getData();
-		} catch (Exception e) {
-			e.printStackTrace();
+		if(isExistInList(username)) {
+			JOptionPane.showMessageDialog(null, "Tên tài khoản đã có người sử dụng!");
 		}
+		else {
+			try {
+				adao.insert(new Account(username, password, role));
+				JOptionPane.showMessageDialog(null, "Thêm mới tài khoản thành công!");
+				getData();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private boolean isExistInList(String username) {
+		for(Account a : accounts) {
+			if(a.getUsername().equals(username)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	private void update(String username, String password, String role) {
@@ -266,6 +290,7 @@ public class Pnl_ManageAccount extends JPanel implements ActionListener {
 			adao.update(new Account(username, password, role));
 			JOptionPane.showMessageDialog(null, "Cập nhật tài khoản thành công!");
 			getData();
+			setEditable(false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -276,6 +301,7 @@ public class Pnl_ManageAccount extends JPanel implements ActionListener {
 			adao.delete(username);
 			JOptionPane.showMessageDialog(null, "Xóa thông tin tài khoản thành công!");
 			getData();
+			setEditable(false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
