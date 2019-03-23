@@ -29,6 +29,35 @@ public class RoomDAO extends DAOAbstract<Room> {
 		return list;
 	}
 	
+	@Override
+	public boolean insert(Room t) throws Exception {
+		String sql = "insert into Rooms(Position, CategoryID, Status) values(?,?,?)";
+		PreparedStatement ps = conn.prepareStatement(sql);
+		ps.setString(1, t.getPosition());
+		ps.setInt(2, t.getCategoryID());
+		ps.setString(3, t.getStatus());
+		return ps.executeUpdate() > 0;
+	}
+	
+	@Override
+	public boolean update(Room t) throws Exception {
+		String sql = "update Rooms set Status = ?, Position = ?, CategoryID = ? where RoomID = ?";
+		PreparedStatement ps = conn.prepareStatement(sql);
+		ps.setString(1, t.getStatus());
+		ps.setString(2, t.getPosition());
+		ps.setInt(3, t.getCategoryID());
+		ps.setInt(4, t.getRoomID());
+		return ps.executeUpdate() > 0;
+	}
+	
+	@Override
+	public boolean delete(int id) throws Exception {
+		String sql = "delete Rooms where RoomID = ?";
+		PreparedStatement ps = conn.prepareStatement(sql);
+		ps.setInt(1, id);
+		return ps.executeUpdate() > 0;
+	}
+	
 	public boolean updateStatus(int roomID, String status) throws Exception {
 		String sql = "update Rooms set Status = ? where RoomID = ?";
 		PreparedStatement ps = conn.prepareStatement(sql);

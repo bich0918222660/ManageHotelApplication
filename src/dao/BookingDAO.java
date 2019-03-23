@@ -17,7 +17,7 @@ public class BookingDAO extends DAOAbstract<Booking> {
 		try {
 			ResultSet rs = conn.prepareStatement(sql).executeQuery();
 			while(rs.next()) {
-				list.add(new Booking(rs.getInt(1), rs.getInt(2), 
+				list.add(0, new Booking(rs.getInt(1), rs.getInt(2), 
 						rs.getInt(3), rs.getDouble(4), 
 						rs.getString(5), rs.getInt(6), 
 						rs.getString(7)));

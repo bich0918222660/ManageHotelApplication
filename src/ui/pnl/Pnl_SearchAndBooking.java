@@ -32,6 +32,7 @@ import dao.BookingDetailDAO;
 import dao.RoomDAO;
 import entity.Category;
 import entity.Customer;
+import entity.Account;
 import entity.Booking;
 import entity.BookingDetail;
 import entity.Room;
@@ -42,7 +43,6 @@ import ui.pnl.component.Pnl_SearchRoom;
 
 public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 
-	private JPanel pnl_header;
 	private Pnl_Booking pnl_booking;
 	private Pnl_SearchRoom pnl_search;
 	private Pnl_CreateCustomer pnl_CreateCustomer;
@@ -84,13 +84,15 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 	
 	// ----
 	private Customer customer = null;
+	private Account account;
 
-	public Pnl_SearchAndBooking() {
+	public Pnl_SearchAndBooking(Account account) {
 		setLayout(new BorderLayout());
+		this.account = account;
 		init();
 		gui();
 		getCategories();
-		getRooms();
+//		getRooms();
 	}
 
 	private void init() {
@@ -104,12 +106,6 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 		// LIST
 		categories = cdao.getAll();
 		rooms = rdao.getAll();
-
-		// Jpanel
-		pnl_header = new JPanel(new BorderLayout());
-		JLabel lbl = new JLabel();
-		lbl.setIcon(new ImageIcon("imgs/rose.jpeg"));
-		pnl_header.add(lbl);
 
 		// Search
 		pnl_search = new Pnl_SearchRoom();
@@ -170,22 +166,23 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 	}
 
 	private void gui() {
-//		this.add(pnl_header, BorderLayout.NORTH);
-
 		Box bv = BoxComponent.getVerticalBox(pnl_search, pnl_booking, pnl_CreateCustomer, 10);
 		Box bh = BoxComponent.getHorizontalBox(bv, 10);
 		add(bh);
 	}
 
 	private void getCategories() {
+		categories = cdao.getAll();
 		for (Category c : categories) {
 			cbx_categories.addItem(c);
 		}
 	}
 
 	private void getRooms() {
+		rooms = rdao.getAll();
 		int count = 1;
 		for (Room r : rooms) {
+			System.out.println(count);
 			pnl_empty_rooms.add(pnl_search.getButton(count, r.getRoomID() + ""));
 			count++;
 		}
@@ -358,18 +355,16 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 	}
 	
 	private void searchRoom(Date checkinDate, Date checkoutDate, Category c) {
+		pnl_empty_rooms.removeAll();
+		this.revalidate();
+		this.repaint();
 		emptyRooms = rdao.getEmptyRooms(c.getCategoryID(), checkinDate);
 		int daysBetween = daysBetween(checkinDate, checkoutDate);
 		if (daysBetween > 0) {
 			int count = 1;
-			for (Room r : rooms) {
-				pnl_search.getButton(count, r.getRoomID() + "").setBackground(Color.LIGHT_GRAY);
-				pnl_search.getButton(count, r.getRoomID() + "").setEnabled(true);
-				count++;
-			}
 			for (Room i : emptyRooms) {
-				pnl_search.getButton(findRoom(i.getRoomID()), i.getRoomID() + "").setBackground(Color.GREEN);
-				pnl_search.getButton(findRoom(i.getRoomID()), i.getRoomID() + "").addActionListener(new ActionListener() {
+				JButton btn = pnl_search.getButton(findRoom(i.getRoomID()), i.getRoomID() + "");
+				btn.addActionListener(new ActionListener() {
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -389,7 +384,10 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 						}
 					}
 				});
+				pnl_empty_rooms.add(btn);
+				count++;
 			}
+			this.revalidate();
 		} else
 			JOptionPane.showMessageDialog(null, "Ngày trả phòng phải sau ngày nhận phòng ít nhất một ngày!");
 	}

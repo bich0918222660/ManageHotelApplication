@@ -21,11 +21,12 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import entity.Account;
 import ui.component.BoxComponent;
 
 public class Pnl_ManageEmployee extends JPanel {
 
-	private Font fontSan = new Font("Arial", Font.BOLD, 18);
+	private Font fontSan = new Font("Arial", Font.BOLD, 14);
 
 	private JLabel lbl_id, lbl_first_name, lbl_middle_name, lbl_last_name, lbl_address, lbl_gender, lbl_phone,
 			lbl_date_of_birth, lbl_account, lbl_person_code, lbl_position;
@@ -40,11 +41,14 @@ public class Pnl_ManageEmployee extends JPanel {
 	private JScrollPane jsp_employee;
 
 	private JPanel pnl_header;
+	
+	private Account account;
 
-	public Pnl_ManageEmployee() {
+	public Pnl_ManageEmployee(Account account) {
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createTitledBorder(null, "Quản lý thông tin nhân viên:", TitledBorder.LEFT, TitledBorder.TOP,
 				fontSan, Color.MAGENTA));
+		this.account = account;
 		init();
 		gui();
 	}

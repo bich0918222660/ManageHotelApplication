@@ -33,6 +33,7 @@ import dao.BookingDAO;
 import dao.BookingDetailDAO;
 import dao.CategoryDAO;
 import dao.CustomerDAO;
+import entity.Account;
 import entity.Booking;
 import entity.BookingDetail;
 import entity.Category;
@@ -50,8 +51,8 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 	private JTextField txt_booking_id, txt_quantity_room,
 			txt_quantity_category, txt_subtotal, 
 			txt_person_code, txt_customer;
-	private JButton btn_update, btn_delete, btn_checkin, 
-			btn_pay, btn_load, btn_search_person_code;
+	private JButton btn_delete, btn_checkin, 
+			btn_pay, btn_load, btn__person_code;
 	private JPanel pnl_booking, pnl_detail;
 	private JTable tbl_booking, tbl_detail;
 	private DefaultTableModel tbl_model_booking, tbl_model_detail;
@@ -73,8 +74,14 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 
 	private CategoryDAO cadao;
 	
-	public Pnl_ManageBooking() {
+	private JFrame jFrame;
+	
+	private Account account;
+	
+	public Pnl_ManageBooking(JFrame jFrame, Account account) {
 		setLayout(new BorderLayout());
+		this.jFrame = jFrame;
+		this.account = account;
 		init();
 		gui();
 		getData();
@@ -159,18 +166,18 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 
 		// JTextField
 		txt_customer = new JTextField();
+		txt_customer.setEditable(false);
 		txt_quantity_room = new JTextField();
+		txt_quantity_room.setEditable(false);
 		txt_booking_id = new JTextField();
+		txt_booking_id.setEditable(false);
 		txt_person_code = new JTextField();
 		txt_subtotal = new JTextField();
+		txt_subtotal.setEditable(false);
 		txt_quantity_category = new JTextField();
+		txt_quantity_category.setEditable(false);
 
 		// JButton
-		btn_update = new JButton(new ImageIcon("imgs/ic_edit.png"));
-		btn_update.setMargin(new Insets(0, 0, 0, 0));
-		btn_update.setBorder(null);
-		btn_update.addActionListener(this);
-
 		btn_delete = new JButton(new ImageIcon("imgs/ic_delete.png"));
 		btn_delete.setMargin(new Insets(0, 0, 0, 0));
 		btn_delete.setBorder(null);
@@ -191,10 +198,10 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 		btn_load.setBorder(null);
 		btn_load.addActionListener(this);
 		
-		btn_search_person_code = new JButton(new ImageIcon("imgs/ic_check.png"));
-		btn_search_person_code.setMargin(new Insets(0, 0, 0, 0));
-		btn_search_person_code.setBorder(null);
-		btn_search_person_code.addActionListener(this);
+		btn__person_code = new JButton(new ImageIcon("imgs/ic_check.png"));
+		btn__person_code.setMargin(new Insets(0, 0, 0, 0));
+		btn__person_code.setBorder(null);
+		btn__person_code.addActionListener(this);
 
 		// JTable
 		String[] header_booking = { 
@@ -315,7 +322,7 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 		String name = "";
 		for(Customer c : customers) {
 			if(c.getCustomerID() == customerID)
-				name = c.getFirstName() + " " + c.getLastName() + " " + c.getLastName();
+				name = c.getFirstName() + " " + c.getMiddleName() + " " + c.getLastName();
 		}
 		return name;
 	}
@@ -336,7 +343,7 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 		Box b_quantity_category = BoxComponent.getHorizontalBox(lbl_quantity_category, txt_quantity_category, 10);
 		Box b_customer = BoxComponent.getHorizontalBox(lbl_customer, txt_customer, 10);
 		Box b_subtotal = BoxComponent.getHorizontalBox(lbl_subtotal, txt_subtotal, 10);
-		Box b_person_code = BoxComponent.getHorizontalBox(lbl_person_code, txt_person_code, btn_search_person_code, 10);
+		Box b_person_code = BoxComponent.getHorizontalBox(lbl_person_code, txt_person_code, btn__person_code, 10);
 		b_person_code.setPreferredSize(new Dimension(30, b_person_code.getPreferredSize().height));
 
 		Box b1 = BoxComponent.getVerticalBox(b_id, b_subtotal, 10);
@@ -348,10 +355,8 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 
 		// Button
 		Box b_button = Box.createHorizontalBox();
-		b_button.add(Box.createHorizontalStrut(900));
+		b_button.add(Box.createHorizontalStrut(940));
 		b_button.add(btn_load);
-		b_button.add(Box.createHorizontalStrut(15));
-		b_button.add(btn_update);
 		b_button.add(Box.createHorizontalStrut(15));
 		b_button.add(btn_delete);
 		b_button.add(Box.createHorizontalStrut(15));
@@ -397,16 +402,26 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 			
 		}
 		else if(o.equals(btn_checkin)) {
-			if(!txt_booking_id.getText().equals("")) {
-				int bookingID = Integer.parseInt(txt_booking_id.getText().trim());
-				checkin(bookingID);
-			}
-			else 
+			int index = tbl_booking.getSelectedRow();
+			if(index < 0)
 			{
 				JOptionPane.showMessageDialog(null, "Bạn chưa chọn đơn đặt để xác nhận việc nhận phòng của khách hàng!");
 			}
+			else {
+				String status = tbl_model_booking.getValueAt(index, 6).toString();
+				if(!txt_booking_id.getText().equals("") && status.equals("Booking")) {
+					int bookingID = Integer.parseInt(txt_booking_id.getText().trim());
+					checkin(bookingID);
+				}
+				else if(status.equals("Rented")) {
+					JOptionPane.showMessageDialog(null, "Đã nhận phòng!");
+				}
+				else if(status.equals("Paid")) {
+					JOptionPane.showMessageDialog(null, "Đã thanh toán!");
+				}
+			}
 		}
-		else if(o.equals(btn_search_person_code)) {
+		else if(o.equals(btn__person_code)) {
 			if(!personCode.equals("")) 
 			{
 				FindBookingByPersonCode(personCode);
@@ -438,7 +453,7 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 					Object[] row = {
 							b.getBookingID(), b.getQuantityCategory(),
 							b.getQuantityRoom(), b.getSubTotal(),
-							b.getPersonCode(), getCustomerName(b.getCustomerID())
+							b.getPersonCode(), getCustomerName(b.getCustomerID()), b.getStatus()
 					};
 					tbl_model_booking.addRow(row);
 					status = true;
@@ -469,9 +484,9 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 		if (answer == JOptionPane.YES_OPTION) {
 			int bookingID = Integer.parseInt(txt_booking_id.getText().trim());
 			double rentalPrice = Double.parseDouble(txt_subtotal.getText().trim());
-			Frm_Payment frm = new Frm_Payment(bookingID, rentalPrice);
+			Frm_Payment frm = new Frm_Payment(bookingID, rentalPrice, account);
 			frm.setVisible(true);
-			getData();
+			jFrame.dispose();
 		}
 	}
 	

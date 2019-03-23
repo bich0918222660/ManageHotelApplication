@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import entity.Account;
 import ui.component.BoxComponent;
 
 public class Pnl_ManageCategory extends JPanel {
@@ -36,11 +37,14 @@ public class Pnl_ManageCategory extends JPanel {
 	private JScrollPane jsp_category;
 
 	private JPanel pnl_header;
+	
+	private Account account;
 
-	public Pnl_ManageCategory() {
+	public Pnl_ManageCategory(Account account) {
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createTitledBorder(null, "Quản lý loại phòng:", TitledBorder.LEFT, TitledBorder.TOP,
 				fontSan, Color.MAGENTA));
+		this.account = account;
 		init();
 		gui();
 	}

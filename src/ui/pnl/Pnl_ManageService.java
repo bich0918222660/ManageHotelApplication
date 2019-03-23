@@ -19,11 +19,12 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import entity.Account;
 import ui.component.BoxComponent;
 
 public class Pnl_ManageService extends JPanel {
 
-	private Font fontSan = new Font("Arial", Font.BOLD, 18);
+	private Font fontSan = new Font("Arial", Font.BOLD, 14);
 	
 	private JLabel lbl_service_id, lbl_service_name,
 			lbl_price, lbl_description;
@@ -36,9 +37,12 @@ public class Pnl_ManageService extends JPanel {
 
 	private JPanel pnl_header;
 	
-	public Pnl_ManageService() {
+	private Account account;
+	
+	public Pnl_ManageService(Account account) {
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createTitledBorder(null, "Quản lý thông tin dịch vụ:", TitledBorder.LEFT, TitledBorder.TOP, fontSan, Color.MAGENTA));
+		this.account = account;
 		init();
 		gui();
 	}

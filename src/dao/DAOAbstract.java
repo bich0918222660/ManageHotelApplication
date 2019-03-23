@@ -27,4 +27,12 @@ public abstract class DAOAbstract<T> {
 		return false;
 	}
 	
+	public boolean delete(String t) throws Exception {
+		return false;
+	}
+	
+	public boolean delete(int t) throws Exception {
+		return false;
+	}
+	
 }

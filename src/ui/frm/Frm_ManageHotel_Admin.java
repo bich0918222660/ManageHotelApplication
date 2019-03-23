@@ -14,10 +14,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import entity.Account;
 import ui.component.BoxComponent;
+import ui.pnl.Pnl_ManageAccount;
 import ui.pnl.Pnl_ManageBooking;
 import ui.pnl.Pnl_ManageCategory;
 import ui.pnl.Pnl_ManageCustomer;
@@ -44,12 +47,15 @@ public class Frm_ManageHotel_Admin extends JFrame implements ActionListener {
 	
 	private JPanel pnlMenu, pnlBody;
 	
-	public Frm_ManageHotel_Admin() {
+	private Account account;
+	
+	public Frm_ManageHotel_Admin(Account account) {
 		setTitle("Manage Hotel Application - ^^!");
 		setSize(1400, 1000);
 		setResizable(false);
 		setLocationRelativeTo(null); // canh giua
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.account = account;
 		init();
 		gui();
 	}
@@ -173,7 +179,7 @@ public class Frm_ManageHotel_Admin extends JFrame implements ActionListener {
 		
 		pnlMenu.add(bv);
 		this.add(pnlMenu, BorderLayout.WEST);
-		Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_SearchAndBooking(), 5), 5);
+		Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageBooking(this, account), 5), 5);
 		pnlBody.add(b);
 		this.add(pnlBody);
 	}
@@ -183,43 +189,48 @@ public class Frm_ManageHotel_Admin extends JFrame implements ActionListener {
 		Object o = e.getSource();
 		if(o.equals(btnBooking)) {
 			pnlBody.removeAll();
-			Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_SearchAndBooking(), 5), 5);
+			Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_SearchAndBooking(account), 5), 5);
 			pnlBody.add(b);
 			revalidate();
 		}
 		else if(o.equals(btnManageBooking)) {
 			pnlBody.removeAll();
-			Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageBooking(), 5), 5);
+			Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageBooking(this, account), 5), 5);
 			pnlBody.add(b);
 			revalidate();
 		}
 		else if(o.equals(btnManageCategory)) {
 			pnlBody.removeAll();
-			Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageCategory(), 20), 20);
+			Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageCategory(account), 20), 20);
 			pnlBody.add(b);
 			revalidate();
 		}
 		else if(o.equals(btnManageRoom)) {
 			pnlBody.removeAll();
-			Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageRoom(), 20), 20);
+			Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageRoom(account), 20), 20);
 			pnlBody.add(b);
 			revalidate();
 		}
 		else if(o.equals(btnManageCustomer)) {
 			pnlBody.removeAll();
-			Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageCustomer(), 20), 20);
+			Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageCustomer(account), 20), 20);
 			pnlBody.add(b);
 			revalidate();
 		}
 		else if(o.equals(btnManageEmployee)) {
-			pnlBody.removeAll();
-			Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageEmployee(), 20), 20);
-			pnlBody.add(b);
-			revalidate();
+			if(account.getRole().equals("Super Admin")) {
+				pnlBody.removeAll();
+				Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageEmployee(account), 20), 20);
+				pnlBody.add(b);
+				revalidate();
+			}
+			else {
+				JOptionPane.showMessageDialog(null, "Bạn chưa được cấp quyền!");
+			}
 		}
 		else if(o.equals(btnManageService)) {
 			pnlBody.removeAll();
-			Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageService(), 20), 20);
+			Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageService(account), 20), 20);
 			pnlBody.add(b);
 			revalidate();
 		}
@@ -231,11 +242,22 @@ public class Frm_ManageHotel_Admin extends JFrame implements ActionListener {
 		else if(o.equals(btnManageService)) {
 			
 		}
+		else if(o.equals(btnManageAccount)) {
+			if(account.getRole().equals("Super Admin")) {
+				pnlBody.removeAll();
+				Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageAccount(account), 20), 20);
+				pnlBody.add(b);
+				revalidate();
+			}
+			else {
+				JOptionPane.showMessageDialog(null, "Bạn chưa được cấp quyền!");
+			}
+		}
 	}
 
 	
 	public static void main(String[] args) {
-		new Frm_ManageHotel_Admin().setVisible(true);
+		new Frm_ManageHotel_Admin(null).setVisible(true);
 	}
 
 }

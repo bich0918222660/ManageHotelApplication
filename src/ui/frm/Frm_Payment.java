@@ -29,6 +29,7 @@ import dao.BookingDAO;
 import dao.PaymentDAO;
 import dao.PaymentDetailDAO;
 import dao.ServiceDAO;
+import entity.Account;
 import entity.Payment;
 import entity.PaymentDetail;
 import entity.Service;
@@ -42,7 +43,7 @@ public class Frm_Payment extends JFrame implements ActionListener {
 	private JTextField txt_booking_id, txt_service_quantiy,
 				txt_rental_price, txt_subtotal;
 	private JComboBox<Service> cbx_services;
-	private JButton btn_pay, btn_delete, btn_add;
+	private JButton btn_pay, btn_delete, btn_add, btn_cancel;
 	
 	private JPanel pnl_services;
 
@@ -62,7 +63,9 @@ public class Frm_Payment extends JFrame implements ActionListener {
 	private PaymentDetailDAO pddao = new PaymentDetailDAO();
 	private BookingDAO bdao = new BookingDAO();
 	
-	public Frm_Payment(int bookingID, double rentalPrice) {
+	private Account account;
+	
+	public Frm_Payment(int bookingID, double rentalPrice, Account account) {
 		setTitle("Payment - ^^!");
 		setSize(600, 600);
 		setResizable(false);
@@ -70,6 +73,7 @@ public class Frm_Payment extends JFrame implements ActionListener {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.bookingID = bookingID;
 		this.rentalPrice = rentalPrice;
+		this.account = account;
 		init();
 		gui();
 		getData();
@@ -116,6 +120,7 @@ public class Frm_Payment extends JFrame implements ActionListener {
 		txt_subtotal = new JTextField();
 		subtotal = rentalPrice + servicePrice;
 		txt_subtotal.setText(subtotal + "");
+		txt_subtotal.setEditable(false);
 		
 		// ComboBox
 		cbx_services = new JComboBox<>();
@@ -127,6 +132,11 @@ public class Frm_Payment extends JFrame implements ActionListener {
 		btn_pay.setBorder(null);
 		btn_pay.addActionListener(this);
 
+		btn_cancel = new JButton(new ImageIcon("imgs/ic_cancel.png"));
+		btn_cancel.setMargin(new Insets(0, 0, 0, 0));
+		btn_cancel.setBorder(null);
+		btn_cancel.addActionListener(this);
+		
 		btn_delete = new JButton(new ImageIcon("imgs/ic_delete.png"));
 		btn_delete.setMargin(new Insets(0, 0, 0, 0));
 		btn_delete.setBorder(null);
@@ -197,8 +207,10 @@ public class Frm_Payment extends JFrame implements ActionListener {
 		Box b4 = BoxComponent.getHorizontalBox(pnl_services, 10);
 		Box b5 = BoxComponent.getHorizontalBox(b_subtotal, 20);
 		Box b6 = Box.createHorizontalBox();
-		b6.add(Box.createHorizontalStrut(510));
+		b6.add(Box.createHorizontalStrut(470));
 		b6.add(btn_pay);
+		b6.add(Box.createHorizontalStrut(10));
+		b6.add(btn_cancel);
 		b6.add(Box.createHorizontalStrut(10));
 		
 		Box b = Box.createVerticalBox();
@@ -225,13 +237,28 @@ public class Frm_Payment extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
 		if(o.equals(btn_add)) {
-			if(!txt_service_quantiy.getText().equals("")) {
-				addService();
+			try {
+				int quantity = Integer.parseInt(txt_service_quantiy.getText());
+				if(quantity == 0) {
+					JOptionPane.showMessageDialog(null, "Số lượng dịch vụ phải hơn 0!");
+				}
+				else if(quantity > 0) {
+					addService();
+				}
+				else 
+				{
+					JOptionPane.showMessageDialog(null, "Bạn chưa nhập số lượng dịch vụ khách sử dụng!");
+				}
+			} catch (NumberFormatException err) {
+				JOptionPane.showMessageDialog(null, "Số lượng dịch vụ phải là chữ số!");
 			}
-			else JOptionPane.showMessageDialog(null, "Bạn chưa nhập số lượng dịch vụ khách sử dụng!");
 		}
 		else if(o.equals(btn_delete)) {
 			deleteService();
+		}
+		else if(o.equals(btn_cancel)) {
+			Frm_ManageHotel_Admin frm = new Frm_ManageHotel_Admin(account);
+			frm.setVisible(true);
 		}
 		else if(o.equals(btn_pay)) {
 			int quantityService = 0, servicePrice = 0;
@@ -241,7 +268,8 @@ public class Frm_Payment extends JFrame implements ActionListener {
 			if (answer == JOptionPane.YES_OPTION) {
 				pay();
 				JOptionPane.showMessageDialog(null, "Thanh toán thành công!");
-				this.setVisible(false);
+				Frm_ManageHotel_Admin frm = new Frm_ManageHotel_Admin(account);
+				frm.setVisible(true);
 			}
 		}
 	}
@@ -323,7 +351,6 @@ public class Frm_Payment extends JFrame implements ActionListener {
 			servicePrice += Double.parseDouble(tbl_model_services.getValueAt(i, 4).toString());
 			quantityService += Integer.parseInt(tbl_model_services.getValueAt(i, 3).toString());
 		}
-		System.out.println(servicePrice + " " + quantityService);
 		subtotal = rentalPrice + servicePrice;
 		txt_subtotal.setText(subtotal + "");
 	}

@@ -5,6 +5,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -12,6 +18,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -19,12 +26,16 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import dao.CategoryDAO;
+import dao.RoomDAO;
+import entity.Account;
 import entity.Category;
+import entity.Room;
 import ui.component.BoxComponent;
 
-public class Pnl_ManageRoom extends JPanel {
+public class Pnl_ManageRoom extends JPanel implements ActionListener {
 
-	private Font fontSan = new Font("Arial", Font.BOLD, 18);
+	private Font fontSan = new Font("Arial", Font.BOLD, 14);
 
 	private JLabel lbl_id, lbl_position, lbl_status, lbl_category;
 	private JTextField txt_id, txt_position;
@@ -36,13 +47,74 @@ public class Pnl_ManageRoom extends JPanel {
 	private JScrollPane jsp_room;
 
 	private JPanel pnl_header;
+	
+	private RoomDAO rdao = new RoomDAO();
+	private CategoryDAO cdao = new CategoryDAO();
+	
+	private List<Room> rooms = new ArrayList<>();
+	private List<Category> categories = new ArrayList<>();
+	
+	private Account account;
 
-	public Pnl_ManageRoom() {
+	public Pnl_ManageRoom(Account account) {
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createTitledBorder(null, "Quản lý thông tin phòng:", TitledBorder.LEFT, TitledBorder.TOP,
 				fontSan, Color.MAGENTA));
+		this.account = account;
+		rooms = rdao.getAll();
 		init();
 		gui();
+		setEditable(false);
+		txt_id.setEditable(false);
+		getData();
+		eventTable();
+	}
+
+	private void eventTable() {
+		tbl_room.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int row = tbl_room.getSelectedRow();
+				String roomID = tbl_model_room.getValueAt(row, 0).toString();
+				String categoryName = tbl_model_room.getValueAt(row, 1).toString();
+				String position = tbl_model_room.getValueAt(row, 2).toString();
+				String status = tbl_model_room.getValueAt(row, 3).toString();
+				
+				txt_id.setText(roomID);
+				txt_position.setText(position);
+				for(int i = 0; i < cbx_categories.getItemCount(); i++) {
+					Category c = (Category) cbx_categories.getItemAt(i);
+					if(categoryName.equals(c.getCategoryName())) {
+						cbx_categories.setSelectedIndex(i);
+						break;
+					}
+				}
+				cbx_status.setSelectedItem(status);
+			}
+			
+		});
+	}
+
+	private void getData() {
+		rooms = rdao.getAll();
+		tbl_model_room.setRowCount(0);;
+		for(Room r : rooms) {
+			String[] row = {
+				r.getRoomID() + "", getCategoryName(r.getCategoryID()),
+				r.getPosition(), r.getStatus()
+			};
+			tbl_model_room.addRow(row);
+		}
+	}
+	
+	private String getCategoryName(int categoryID) {
+		String name = "";
+		for(Category c : categories) {
+			if(c.getCategoryID() == categoryID)
+				name = c.getCategoryName();
+		}
+		return name;
 	}
 
 	private void init() {
@@ -67,7 +139,9 @@ public class Pnl_ManageRoom extends JPanel {
 
 		// JComboBox
 		cbx_categories = new JComboBox<>();
-		cbx_categories.addItem(new Category("aaa", "", 100, 0, "", "Single Room"));
+		for(Category c : cdao.getAll()) {
+			cbx_categories.addItem(c);
+		}
 
 		cbx_status = new JComboBox<>();
 		cbx_status.addItem("Empty");
@@ -78,22 +152,27 @@ public class Pnl_ManageRoom extends JPanel {
 		btn_add = new JButton(new ImageIcon("imgs/ic_add.png"));
 		btn_add.setMargin(new Insets(0, 0, 0, 0));
 		btn_add.setBorder(null);
+		btn_add.addActionListener(this);
 
 		btn_update = new JButton(new ImageIcon("imgs/ic_edit.png"));
 		btn_update.setMargin(new Insets(0, 0, 0, 0));
 		btn_update.setBorder(null);
+		btn_update.addActionListener(this);
 
 		btn_delete = new JButton(new ImageIcon("imgs/ic_delete.png"));
 		btn_delete.setMargin(new Insets(0, 0, 0, 0));
 		btn_delete.setBorder(null);
+		btn_delete.addActionListener(this);
 
 		btn_load = new JButton(new ImageIcon("imgs/ic_load.png"));
 		btn_load.setMargin(new Insets(0, 0, 0, 0));
 		btn_load.setBorder(null);
+		btn_load.addActionListener(this);
 
 		btn_save = new JButton(new ImageIcon("imgs/ic_save.png"));
 		btn_save.setMargin(new Insets(0, 0, 0, 0));
 		btn_save.setBorder(null);
+		btn_save.addActionListener(this);
 
 		// JTable
 		String[] header = { "Mã phòng", "Loại phòng", "Vị trí phòng", "Tình trạng" };
@@ -147,5 +226,80 @@ public class Pnl_ManageRoom extends JPanel {
 
 		add(bh_full);
 		add(BoxComponent.getVerticalBox(pnl_header, bh_info, 0), BorderLayout.NORTH);
+	}
+	
+	private void setEditable(boolean status) {
+		txt_position.setEditable(status);
+		cbx_categories.setEditable(status);
+		cbx_status.setEditable(status);
+		btn_add.setEnabled(!status);
+		btn_update.setEnabled(!status);
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object o = e.getSource();
+		if(o.equals(btn_load)) {
+			getData();
+		}
+		else if(o.equals(btn_add)) {
+			setEditable(true);
+			btn_update.setEnabled(true);
+		}
+		else if(o.equals(btn_update)) {
+			setEditable(true);
+			btn_add.setEnabled(true);
+		}
+		else if(o.equals(btn_delete)) {
+			if(account.getRole().equals("Super Admin")) {
+				int id = Integer.parseInt(txt_id.getText());
+				int answer = JOptionPane.showConfirmDialog(null,
+						"Bạn có thực sự muốn xóa phòng " + id + " không?", "Xóa thông tin phòng",
+						JOptionPane.YES_NO_OPTION);
+				if (answer == JOptionPane.YES_OPTION) {
+					try {
+						rdao.delete(id);
+						getData();
+						JOptionPane.showMessageDialog(null, "Xóa thông tin phòng thành công!");
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+			else {
+				JOptionPane.showMessageDialog(null, "Bạn chưa được cấp quyền!");
+			}
+		}
+		else if(o.equals(btn_save)) {
+			if(!btn_add.isEnabled()) {
+				Category c = (Category) cbx_categories.getSelectedItem();
+				String position = txt_position.getText();
+				Room room = new Room(position, "Empty", c.getCategoryID());
+				try {
+					rdao.insert(room);
+					getData();
+					JOptionPane.showMessageDialog(null, "Thêm thông tin phòng thành công!");
+					setEditable(false);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+			else
+			{
+				Category c = (Category) cbx_categories.getSelectedItem();
+				int roomID = Integer.parseInt(txt_id.getText());
+				String position = txt_position.getText();
+				String status = (String) cbx_status.getSelectedItem();
+				Room room = new Room(roomID, position, status, c.getCategoryID());
+				try {
+					rdao.update(room);
+					getData();
+					JOptionPane.showMessageDialog(null, "Cập nhật thông tin phòng thành công!");
+					setEditable(false);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
 	}
 }

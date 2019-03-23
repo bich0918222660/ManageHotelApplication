@@ -18,10 +18,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import dao.AccountDAO;
+import entity.Account;
 import ui.component.BoxComponent;
 
 public class Frm_Login extends JFrame implements ActionListener {
@@ -30,7 +33,7 @@ public class Frm_Login extends JFrame implements ActionListener {
 	private JLabel lblUsername, lblPassword, lblTitle;
 	private JTextField txtUsername;
 	private JPasswordField txtPassword;
-	private JButton btnLogin, btnIsEmployee;
+	private JButton btnLogin;
 
 	private Font fontSan = new Font("Arial", Font.BOLD, 14);
 	
@@ -49,22 +52,44 @@ public class Frm_Login extends JFrame implements ActionListener {
 		JPanel pnl = new Pnl_Login();
 		add(pnl);
 		btnLogin.addActionListener(this);
-		btnIsEmployee.addActionListener(this);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
-		if(o.equals(btnIsEmployee)) {
-			Frm_ManageHotel_Admin frm = new Frm_ManageHotel_Admin();
-			frm.setVisible(true);
-			this.dispose();
+		if(o.equals(btnLogin)) {
+			String username = txtUsername.getText().trim();
+			String password = txtPassword.getText().trim();
+			
+			Account acc = existInList(username, password);
+			if(acc != null) {
+				Frm_ManageHotel_Admin frm = new Frm_ManageHotel_Admin(acc);
+				frm.setVisible(true);
+				this.dispose();
+			}
+			else {
+				JOptionPane.showMessageDialog(null, "Mật khẩu không hợp lệ!");
+			}
 		}
-		else if(o.equals(btnLogin)) {
-			Frm_ManageHotel_Admin frm = new Frm_ManageHotel_Admin();
-			frm.setVisible(true);
-			this.dispose();
+	}
+	
+	private Account existInList(String username, String password) {
+		AccountDAO dao = new AccountDAO();
+		try {
+			for(Account acc : dao.getAll()) {
+				if(acc.getUsername().equals(username) && acc.getPassword().equals(password)) {
+					return acc;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
+		return null;
+	}
+	
+	public static void main(String[] args) {
+		new Frm_Login().setVisible(true);
 	}
 
 	public class Pnl_Login extends JPanel {
@@ -108,10 +133,6 @@ public class Frm_Login extends JFrame implements ActionListener {
 			btnLogin = new JButton("LOGIN");
 			btnLogin.setFont(fontSan);
 			
-			btnIsEmployee = new JButton("I'M A ADMIN");
-			btnIsEmployee.setFont(fontSan);
-
-			
 		}
 
 		public void createGUI() {
@@ -123,7 +144,7 @@ public class Frm_Login extends JFrame implements ActionListener {
 			Box b0 = BoxComponent.getHorizontalBox(lblTitle, 20);
 			Box b1 = BoxComponent.getHorizontalBox(lblUsername, txtUsername, 20);
 			Box b2 = BoxComponent.getHorizontalBox(lblPassword, txtPassword, 20);
-			Box b3 = BoxComponent.getHorizontalBox(btnLogin, btnIsEmployee, 20);
+			Box b3 = BoxComponent.getHorizontalBox(btnLogin, 20);
 
 			Box b = BoxComponent.getVerticalBox(b0, b1, b2, b3, 20);
 			b.setBorder(BorderFactory.createLineBorder(Color.white));

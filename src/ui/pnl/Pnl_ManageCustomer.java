@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import entity.Account;
 import ui.component.BoxComponent;
 
 public class Pnl_ManageCustomer extends JPanel {
@@ -40,9 +41,12 @@ public class Pnl_ManageCustomer extends JPanel {
 	private JPanel pnl_header;
 
 	private JPanel pnl_body;
+	
+	private Account account;
 
-	public Pnl_ManageCustomer() {
+	public Pnl_ManageCustomer(Account account) {
 		setLayout(new BorderLayout());
+		this.account = account;
 		init();
 		gui();
 	}
