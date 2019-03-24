@@ -33,6 +33,7 @@ import dao.BookingDAO;
 import dao.BookingDetailDAO;
 import dao.CategoryDAO;
 import dao.CustomerDAO;
+import dao.RoomDAO;
 import entity.Account;
 import entity.Booking;
 import entity.BookingDetail;
@@ -64,6 +65,7 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 	private BookingDAO bdao;
 	private BookingDetailDAO bddao;
 	private CustomerDAO cdao;
+	private RoomDAO rdao;
 	
 	// List
 	private List<Booking> bookings;
@@ -112,12 +114,14 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 				try {
 					List<BookingDetail> list = bddao.getByBookingID(Integer.parseInt(id));
 					for(BookingDetail i : list) {
-						Object[] obj = {
-							i.getBookingDetailID(), i.getCheckinDate(),
-							i.getCheckoutDate(), i.getPrice(),
-							i.getDiscount(), i.getRoomID(), getCategoryName(i.getCategoryID())
-						};
-						tbl_model_detail.addRow(obj);
+						if(i.getBookingID() == Integer.parseInt(id)) {
+							Object[] obj = {
+									i.getBookingDetailID(), i.getCheckinDate(),
+									i.getCheckoutDate(), i.getPrice(),
+									i.getDiscount(), i.getRoomID(), getCategoryName(i.getCategoryID())
+								};
+								tbl_model_detail.addRow(obj);
+						}
 					}
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -132,6 +136,7 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 		bddao = new BookingDetailDAO();
 		cdao = new CustomerDAO();
 		cadao = new CategoryDAO();
+		rdao = new RoomDAO();
 		
 		// List
 		try {
@@ -395,11 +400,27 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
-		
 		String personCode = txt_person_code.getText().trim();
-		
 		if(o.equals(btn_delete)) {
-			
+			int row = tbl_booking.getSelectedRow();
+			if(row < 0) {
+				JOptionPane.showMessageDialog(null, "Bạn chưa chọn đơn đặt!");
+			} 
+			else {
+				String status = tbl_model_booking.getValueAt(row, 6).toString();
+				int bookingID = Integer.parseInt(tbl_model_booking.getValueAt(row, 0).toString());
+				if(status.equals("Booking")) {
+					int answer = JOptionPane.showConfirmDialog(null,
+							"Bạn có thực sự muốn xóa đơn đặt số " + bookingID + " không?", "Xóa thông tin đơn đặt",
+							JOptionPane.YES_NO_OPTION);
+					if (answer == JOptionPane.YES_OPTION) {
+						delete(bookingID);
+					}
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "Không thể xóa đơn đặt số " + bookingID + " được! Có thể đã được khách hàng nhận phòng hoặc đã trả phòng!");
+				}
+			}
 		}
 		else if(o.equals(btn_checkin)) {
 			int index = tbl_booking.getSelectedRow();
@@ -439,7 +460,23 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 				JOptionPane.showMessageDialog(null, "Bạn chưa chọn đơn đặt để xác nhận việc nhận phòng của khách hàng!");
 			}
 		}
-		
+	}
+	
+	private void delete(int bookingID) {
+		try {
+			for(BookingDetail i : bddao.getAll()) {
+				if(i.getBookingID() == bookingID) {
+					rdao.updateStatus(i.getRoomID(), "Empty");
+					bddao.delete(i.getBookingDetailID());
+				}
+			}
+			bdao.delete(bookingID);
+			JOptionPane.showMessageDialog(null, "Xóa thông tin đơn đặt thành công!");
+			getData();
+			tbl_model_detail.setRowCount(0);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
 	}
 	
 	private void FindBookingByPersonCode(String personCode) {

@@ -251,8 +251,9 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 					
 					try {
 						bdao.insert(booking);
-						
-						Booking b = bdao.getAll().get(bdao.getAll().size() - 1);
+						List<Booking> bookings = bdao.getAll();
+						Booking b = bookings.get(0);
+						System.out.println(b.getBookingID() + " - " + b.getPersonCode());
 						int bookingID = b.getBookingID();
 						
 						for(BookingDetail bd : bookingDetails) {

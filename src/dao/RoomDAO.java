@@ -107,8 +107,6 @@ public class RoomDAO extends DAOAbstract<Room> {
 		return list;
 	}
 	
-	
-	
 	private String getDateFormat(Date date) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		return dateFormat.format(date);

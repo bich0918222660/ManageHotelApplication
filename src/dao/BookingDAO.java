@@ -50,4 +50,12 @@ public class BookingDAO extends DAOAbstract<Booking> {
 		return ps.executeUpdate() > 0;
 	}
 	
+	@Override
+	public boolean delete(int id) throws Exception {
+		String sql = "delete Bookings where BookingID = ?";
+		PreparedStatement ps = conn.prepareStatement(sql);
+		ps.setInt(1, id);
+		return ps.executeUpdate() > 0;
+	}
+	
 }
