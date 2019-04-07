@@ -16,7 +16,8 @@ public class PaymentDetailDAO extends DAOAbstract<PaymentDetail> {
 		try {
 			ResultSet rs = conn.prepareStatement(sql).executeQuery();
 			while(rs.next()) {
-				list.add(new PaymentDetail(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getDouble(4), rs.getDouble(5)));
+				list.add(new PaymentDetail(rs.getInt(1), rs.getInt(2), rs.getInt(3),
+						rs.getInt(4), rs.getDouble(5), rs.getDouble(6)));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

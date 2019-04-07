@@ -5,25 +5,39 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableModel;
 
+import dao.CategoryDAO;
 import entity.Account;
+import entity.Category;
 import ui.component.BoxComponent;
 
-public class Pnl_ManageCategory extends JPanel {
+public class Pnl_ManageCategory extends JPanel implements ActionListener {
 
 	private Font fontSan = new Font("Arial", Font.BOLD, 14);
 
@@ -39,6 +53,10 @@ public class Pnl_ManageCategory extends JPanel {
 	private JPanel pnl_header;
 	
 	private Account account;
+	private CategoryDAO cdao = new CategoryDAO();
+	
+	private String imageUrl = "";
+	private String imageName = "";
 
 	public Pnl_ManageCategory(Account account) {
 		setLayout(new BorderLayout());
@@ -47,6 +65,47 @@ public class Pnl_ManageCategory extends JPanel {
 		this.account = account;
 		init();
 		gui();
+		setEditable(false);
+		getData();
+		eventTable();
+	}
+
+	private void eventTable() {
+		tbl_category.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int row = tbl_category.getSelectedRow();
+				String id = tbl_model_category.getValueAt(row, 0).toString();
+				int categoryID = Integer.parseInt(id);
+				
+				for(Category c : cdao.getAll()) {
+					if(c.getCategoryID() == categoryID) {
+						txt_description.setText(c.getDescription());
+						int discount = (int) c.getDiscount();
+						txt_discount.setText(discount + "");
+						txt_id.setText(categoryID + "");
+						txt_name.setText(c.getCategoryName());
+						int price = (int) c.getPrice();
+						txt_price.setText(price + "");
+						cbx_types.setSelectedItem(c.getType());
+					}
+				}
+				
+			}
+			
+		});
+	}
+
+	private void getData() {
+		tbl_model_category.setRowCount(0);
+		for(Category c : cdao.getAll()) {
+			String[] row = {
+				c.getCategoryID() + "",	c.getCategoryName(),
+				c.getType(), c.getPrice() + "", c.getDiscount() + ""
+			};
+			tbl_model_category.addRow(row);
+		}
 	}
 
 	private void init() {
@@ -84,32 +143,38 @@ public class Pnl_ManageCategory extends JPanel {
 
 		// JComboxBox
 		cbx_types = new JComboBox<>();
-		cbx_types.addItem("Single Room");
-		cbx_types.addItem("Couple Room");
-		cbx_types.addItem("Three Beds Room");
+		cbx_types.addItem("Giường đơn");
+		cbx_types.addItem("Giường đôi");
+		cbx_types.addItem("Ba giường");
 
 		// JButton
 		btn_add = new JButton(new ImageIcon("imgs/ic_add.png"));
 		btn_add.setMargin(new Insets(0, 0, 0, 0));
 		btn_add.setBorder(null);
+		btn_add.addActionListener(this);
 
 		btn_update = new JButton(new ImageIcon("imgs/ic_edit.png"));
 		btn_update.setMargin(new Insets(0, 0, 0, 0));
 		btn_update.setBorder(null);
+		btn_update.addActionListener(this);
 
 		btn_delete = new JButton(new ImageIcon("imgs/ic_delete.png"));
 		btn_delete.setMargin(new Insets(0, 0, 0, 0));
 		btn_delete.setBorder(null);
+		btn_delete.addActionListener(this);
 
 		btn_load = new JButton(new ImageIcon("imgs/ic_load.png"));
 		btn_load.setMargin(new Insets(0, 0, 0, 0));
 		btn_load.setBorder(null);
+		btn_load.addActionListener(this);
 		
 		btn_save = new JButton(new ImageIcon("imgs/ic_save.png"));
 		btn_save.setMargin(new Insets(0, 0, 0, 0));
 		btn_save.setBorder(null);
+		btn_save.addActionListener(this);
 
 		btnUpload = new JButton("Upload File");
+		btnUpload.addActionListener(this);
 
 		// JTable
 		String[] header = { "Mã loại", "Tên loại", "Thuộc loại", "Đơn giá", "Giảm giá" };
@@ -167,6 +232,159 @@ public class Pnl_ManageCategory extends JPanel {
 
 		add(bh_full);
 		add(BoxComponent.getVerticalBox(pnl_header, bh_info, 0), BorderLayout.NORTH);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object o = e.getSource();
+		if(o.equals(btnUpload)) {
+			JFileChooser jfc = new JFileChooser();
+			jfc.setCurrentDirectory(new File("C:\\Users\\Bitluntit\\Pictures"));
+			jfc.setDialogTitle("Select an image");
+			jfc.setAcceptAllFileFilterUsed(false);
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG, JPG and GIF images", "png", "gif", "jpg");
+			jfc.addChoosableFileFilter(filter);
+	
+			int returnValue = jfc.showOpenDialog(null);
+			if (returnValue == JFileChooser.APPROVE_OPTION) {
+				imageUrl = jfc.getSelectedFile().getPath();
+				String[] arr = imageUrl.split("\\\\");
+				lbl_image_url.setText(arr[arr.length - 1]);
+				imageName = arr[arr.length - 1];
+			}
+		}
+		else if(o.equals(btn_load)) {
+			getData();
+		}
+		else if(o.equals(btn_add)) {
+			setEditable(true);
+			txt_id.setEditable(false);
+			btn_update.setEnabled(true);
+		}
+		else if(o.equals(btn_update)) {
+			setEditable(true);
+			txt_id.setEditable(false);
+			btn_add.setEnabled(true);
+		}
+		else if(o.equals(btn_save)) {
+			try {
+				int id = Integer.parseInt(txt_id.getText().trim());
+				String categoryName = txt_name.getText().trim();
+				String description = txt_description.getText().trim();
+				double price = Double.parseDouble(txt_price.getText().trim());
+				float discount = Float.parseFloat(txt_discount.getText().trim());
+				String image = imageName;
+				String type = cbx_types.getSelectedItem().toString();
+				
+				if(!btn_add.isEnabled()) {
+					if(lbl_image_url.getText().equals("Choose image file...")) {
+						JOptionPane.showMessageDialog(null, "Hình ảnh không được để trống", "Thông báo", 0);
+					}
+					else {
+						Category c = new Category(categoryName, description, price, discount, image, type);
+						
+						try {
+							saveImage(imageUrl);
+							cdao.insert(c);
+							JOptionPane.showMessageDialog(null, "Thêm mới thành công!");
+							resetText();
+							getData();
+							setEditable(false);
+						} catch (Exception e2) {
+							e2.printStackTrace();
+						}
+					}
+				}
+				else {
+					Category c = new Category(id, categoryName, description, price, discount, image, type);
+					
+					try {
+						if(lbl_image_url.getText().equals("Choose image file...")) {
+							cdao.updateNoImage(c);
+						}
+						else {
+							saveImage(imageUrl);
+							cdao.update(c);
+						}
+						JOptionPane.showMessageDialog(null, "Cập nhật thành công!");
+						lbl_image_url.setText("Choose image file...");
+						getData();
+						setEditable(false);
+					} catch (Exception e2) {
+						e2.printStackTrace();
+					}
+				}
+			} catch (NumberFormatException e2) {
+				JOptionPane.showMessageDialog(null, "Đơn giá và giảm giá phải là ký tự số!");
+			}
+		}
+		else if(o.equals(btn_delete)) {
+			if(account.getRole().equals("Super Admin")) {
+				int row = tbl_category.getSelectedRow();
+				if(row < 0) {
+					JOptionPane.showMessageDialog(null, "Bạn chưa chọn thông tin khách hàng cần xóa!");
+				}
+				else {
+					int id = Integer.parseInt(txt_id.getText());
+					int answer = JOptionPane.showConfirmDialog(null,
+							"Bạn có thực sự muốn xóa nhân viên - mã số: " + id + " không?", "Xóa thông tin khách hàng",
+							JOptionPane.YES_NO_OPTION);
+					if (answer == JOptionPane.YES_OPTION) {
+						try {
+							cdao.delete(id);
+							JOptionPane.showMessageDialog(null, "Xóa thành công!");
+							getData();
+							resetText();
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+					}
+				}
+			}
+			else {
+				JOptionPane.showMessageDialog(null, "Bạn chưa được cấp quyền!");
+			}
+		}
+	}
+	
+	private void resetText() {
+		txt_description.setText("");
+		txt_discount.setText("");
+		txt_id.setText("");
+		txt_name.setText("");
+		txt_price.setText("");
+		lbl_image_url.setText("Choose image file...");
+	}
+
+	private void setEditable(boolean status) {
+		txt_description.setEditable(status);
+		txt_discount.setEditable(status);
+		txt_id.setEditable(status);
+		txt_name.setEditable(status);
+		txt_price.setEditable(status);
+		cbx_types.setEditable(status);
+		btn_add.setEnabled(!status);
+		btn_update.setEnabled(!status);
+	}
+	
+	private void saveImage(String path) {
+		BufferedImage image = null;
+		File f = null;
+		try {
+			// read
+			f = new File(path);
+			image = ImageIO.read(f);
+
+			// write
+			String[] str = path.split("\\.");
+			String type = str[str.length - 1];
+			int count = new File("imgs\\rooms").list().length;
+			String fileName = count++  + "."+ type;
+			f = new File("imgs\\rooms\\" + fileName);
+			ImageIO.write(image, "jpg", f);
+		} catch (IOException e) {
+			System.out.println("Error: " + e);
+		}
 	}
 
 }

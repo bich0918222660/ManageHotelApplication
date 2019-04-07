@@ -83,8 +83,17 @@ public class Pnl_ManageAccount extends JPanel implements ActionListener {
 		try {
 			accounts = adao.getAll();
 			for(Account a : accounts) {
+				String role = "";
+				if(a.getRole().equals("Admin")) {
+					role = "Nhân viên";
+				}
+				else if(a.getRole().equals("Super Admin")) {
+					role = "Quản lý";
+				} else {
+					role = "Khách hàng";
+				}
 				String[] row = {
-					a.getUsername(), a.getPassword(), a.getRole()
+					a.getUsername(), a.getPassword(), role
 				};
 				tbl_model_account.addRow(row);
 			}
@@ -92,10 +101,6 @@ public class Pnl_ManageAccount extends JPanel implements ActionListener {
 			e.printStackTrace();
 		}
 	}
-	
-//	private String getPassword(String password) {
-//		password.sp
-//	}
 
 	private void init() {
 		// Jpanel
@@ -119,9 +124,9 @@ public class Pnl_ManageAccount extends JPanel implements ActionListener {
 		// JComboBox
 		cbx_roles = new JComboBox<>();
 		cbx_roles.setPreferredSize(new Dimension(200, cbx_roles.getPreferredSize().height));
-		cbx_roles.addItem("User");
-		cbx_roles.addItem("Admin");
-		cbx_roles.addItem("Super Admin");
+		cbx_roles.addItem("Khách hàng");
+		cbx_roles.addItem("Nhân viên");
+		cbx_roles.addItem("Quản lý");
 
 		// JButton
 		btn_add = new JButton(new ImageIcon("imgs/ic_add.png"));
@@ -213,11 +218,17 @@ public class Pnl_ManageAccount extends JPanel implements ActionListener {
 			getData();
 		}
 		else if(o.equals(btn_delete)) {
-			int answer = JOptionPane.showConfirmDialog(null,
-					"Bạn có thực sự muốn xóa tài khoản ( " + username + " ) không?", "Xóa thông tin tài khoản",
-					JOptionPane.YES_NO_OPTION);
-			if (answer == JOptionPane.YES_OPTION) {
-				delete(username);
+			int row = tbl_account.getSelectedRow();
+			if(row < 0) {
+				JOptionPane.showMessageDialog(null, "Bạn chưa chọn thông tin tài khoản cần xóa!");
+			}
+			else {
+				int answer = JOptionPane.showConfirmDialog(null,
+						"Bạn có thực sự muốn xóa tài khoản ( " + username + " ) không?", "Xóa thông tin tài khoản",
+						JOptionPane.YES_NO_OPTION);
+				if (answer == JOptionPane.YES_OPTION) {
+					delete(username);
+				}
 			}
 		}
 		else if(o.equals(btn_add)) {
@@ -232,8 +243,17 @@ public class Pnl_ManageAccount extends JPanel implements ActionListener {
 		else if(o.equals(btn_save)) {
 			if(!btn_add.isEnabled()) {
 				if(!username.equals("") && !password.equals("") && !role.equals("")) {
+					String r = "";
+					if(role.equals("Nhân viên")) {
+						r = "Admin";
+					}
+					else if(role.equals("Khách hàng")) {
+						r = "User";
+					} else {
+						r = "Super Admin";
+					}
 					if(ValidationService.validateUsername(username) && ValidationService.validatePassword(password)) {
-						add(username, password, role);
+						add(username, password, r);
 					}
 				}
 				else {
@@ -242,8 +262,17 @@ public class Pnl_ManageAccount extends JPanel implements ActionListener {
 			}
 			else {
 				if(!username.equals("") && !password.equals("") && !role.equals("")) {
+					String r = "";
+					if(role.equals("Nhân viên")) {
+						r = "Admin";
+					}
+					else if(role.equals("Khách hàng")) {
+						r = "User";
+					} else {
+						r = "Super Admin";
+					}
 					if(ValidationService.validateUsername(username) && ValidationService.validatePassword(password)) {
-						update(username, password, role);
+						update(username, password, r);
 					}
 				}
 				else {

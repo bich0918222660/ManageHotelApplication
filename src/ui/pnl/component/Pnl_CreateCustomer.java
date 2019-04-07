@@ -3,6 +3,7 @@ package ui.pnl.component;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -78,6 +79,7 @@ public class Pnl_CreateCustomer extends JPanel {
 		// JDateChooser
 		dcs_date_of_birth = new JDateChooser();
 		dcs_date_of_birth.setDateFormatString("dd/MM/yyyy");
+		dcs_date_of_birth.setDate(new Date());
 		
 		//JRadioButton
 		rb_female = new JRadioButton("Nữ");

@@ -17,6 +17,7 @@ public class Employee extends PersonInformation {
 	Address	nvarchar(100)	Unchecked
 	Email	varchar(60)	Unchecked
 	AccountID	varchar(40)	Checked
+	PersonCode varchar(12)
 	 */
 	
 	private int employeeID;

@@ -25,6 +25,7 @@ import ui.pnl.Pnl_ManageBooking;
 import ui.pnl.Pnl_ManageCategory;
 import ui.pnl.Pnl_ManageCustomer;
 import ui.pnl.Pnl_ManageEmployee;
+import ui.pnl.Pnl_ManagePayments;
 import ui.pnl.Pnl_ManageRoom;
 import ui.pnl.Pnl_ManageService;
 import ui.pnl.Pnl_SearchAndBooking;
@@ -35,13 +36,13 @@ public class Frm_ManageHotel_Admin extends JFrame implements ActionListener {
 	
 	private JButton btnBooking, btnManageBooking,
 			btnManagePayment, btnManageCategory,
-			btnManageRoom, btnManageService,
+			btnManageRoom, btnReport,
 			btnManageCustomer, btnManageEmployee,
 			btnLogout, btnManageAccount;
 	
 	private JLabel lblBooking, lblManageBooking,
 			lblManagePayment, lblManageCategory,
-			lblManageRoom, lblManageService, 
+			lblManageRoom, lblReport, 
 			lblManageCustomer, lblManageEmployee,
 			lblLogout, lblManageAccount;
 	
@@ -66,7 +67,7 @@ public class Frm_ManageHotel_Admin extends JFrame implements ActionListener {
 		pnlMenu.setBorder(BorderFactory.createTitledBorder(null, "Menu:", TitledBorder.LEFT, TitledBorder.TOP, fontSan, Color.BLACK));
 		
 		pnlBody = new JPanel(new BorderLayout());
-		pnlBody.setBorder(BorderFactory.createTitledBorder(null, "Body:", TitledBorder.LEFT, TitledBorder.TOP, fontSan, Color.BLACK));
+		pnlBody.setBorder(BorderFactory.createTitledBorder(null, "", TitledBorder.LEFT, TitledBorder.TOP, fontSan, Color.BLACK));
 		
 		// JButton
 		btnBooking = new JButton(new ImageIcon("imgs/ic_booking.png"));
@@ -94,10 +95,10 @@ public class Frm_ManageHotel_Admin extends JFrame implements ActionListener {
 		btnManageRoom.setBorder(null);
 		btnManageRoom.addActionListener(this);
 		
-		btnManageService = new JButton(new ImageIcon("imgs/ic_manage_service.png"));
-		btnManageService.setMargin(new Insets(0, 0, 0, 0));
-		btnManageService.setBorder(null);
-		btnManageService.addActionListener(this);
+		btnReport = new JButton(new ImageIcon("imgs/ic_report.png"));
+		btnReport.setMargin(new Insets(0, 0, 0, 0));
+		btnReport.setBorder(null);
+		btnReport.addActionListener(this);
 
 		btnManageCustomer = new JButton(new ImageIcon("imgs/ic_manage_customer.png"));
 		btnManageCustomer.setMargin(new Insets(0, 0, 0, 0));
@@ -125,7 +126,7 @@ public class Frm_ManageHotel_Admin extends JFrame implements ActionListener {
 		lblManagePayment = new JLabel("Quản lý đơn thanh toán");
 		lblManageCategory = new JLabel("Quản lý loại phòng");
 		lblManageRoom = new JLabel("Quản lý phòng");
-		lblManageService = new JLabel("Quản lý dịch vụ");
+		lblReport = new JLabel("Thống kê - Báo cáo");
 		lblManageCustomer = new JLabel("Quản lý khách hàng");
 		lblManageEmployee = new JLabel("Quản lý nhân viên");
 		lblManageAccount = new JLabel("Quản lý tài khoản");
@@ -156,9 +157,9 @@ public class Frm_ManageHotel_Admin extends JFrame implements ActionListener {
 		bv.add(Box.createVerticalStrut(4));
 		bv.add(BoxComponent.getHorizontalBox(lblManageRoom, 10));
 		bv.add(Box.createVerticalStrut(10));
-		bv.add(BoxComponent.getHorizontalBox(btnManageService, 10));
+		bv.add(BoxComponent.getHorizontalBox(btnReport, 10));
 		bv.add(Box.createVerticalStrut(4));
-		bv.add(BoxComponent.getHorizontalBox(lblManageService, 10));
+		bv.add(BoxComponent.getHorizontalBox(lblReport, 10));
 		bv.add(Box.createVerticalStrut(10));
 		bv.add(BoxComponent.getHorizontalBox(btnManageCustomer, 10));
 		bv.add(Box.createVerticalStrut(4));
@@ -228,19 +229,20 @@ public class Frm_ManageHotel_Admin extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, "Bạn chưa được cấp quyền!");
 			}
 		}
-		else if(o.equals(btnManageService)) {
-			pnlBody.removeAll();
-			Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageService(account), 20), 20);
-			pnlBody.add(b);
-			revalidate();
+		else if(o.equals(btnReport)) {
+			Frm_ReportAndStatistical frm = new Frm_ReportAndStatistical(account);
+			frm.setVisible(true);
+			this.dispose();
 		}
 		else if(o.equals(btnLogout)) {
 			Frm_Login frm = new Frm_Login();
 			frm.setVisible(true);
 			this.dispose();
 		}
-		else if(o.equals(btnManageService)) {
-			
+		else if(o.equals(btnManagePayment)) {
+			pnlBody.removeAll();
+			pnlBody.add(new Pnl_ManagePayments(account));
+			revalidate();
 		}
 		else if(o.equals(btnManageAccount)) {
 			if(account.getRole().equals("Super Admin")) {

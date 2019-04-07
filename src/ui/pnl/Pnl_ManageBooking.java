@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -53,7 +54,7 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 			txt_quantity_category, txt_subtotal, 
 			txt_person_code, txt_customer;
 	private JButton btn_delete, btn_checkin, 
-			btn_pay, btn_load, btn__person_code;
+			btn_pay, btn_load, btn__person_code, btn_list_today;
 	private JPanel pnl_booking, pnl_detail;
 	private JTable tbl_booking, tbl_detail;
 	private DefaultTableModel tbl_model_booking, tbl_model_detail;
@@ -75,6 +76,7 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 	private DefaultTableCellRenderer dtbl_cell_render;
 
 	private CategoryDAO cadao;
+	private CustomerDAO cudao;
 	
 	private JFrame jFrame;
 	
@@ -106,7 +108,7 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 				txt_booking_id.setText(id);
 				txt_quantity_room.setText(qRoom);
 				txt_quantity_category.setText(qCategory);
-				txt_subtotal.setText(subtotal);
+				txt_subtotal.setText((int) Double.parseDouble(subtotal) + "");
 				txt_person_code.setText(personCode);
 				txt_customer.setText(customer);
 				
@@ -137,6 +139,7 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 		cdao = new CustomerDAO();
 		cadao = new CategoryDAO();
 		rdao = new RoomDAO();
+		cudao = new CustomerDAO();
 		
 		// List
 		try {
@@ -208,11 +211,17 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 		btn__person_code.setBorder(null);
 		btn__person_code.addActionListener(this);
 
+		btn_list_today = new JButton(new ImageIcon("imgs/ic_list.png"));
+		btn_list_today.setMargin(new Insets(0, 0, 0, 0));
+		btn_list_today.setBorder(null);
+		btn_list_today.addActionListener(this);
+
 		// JTable
 		String[] header_booking = { 
 				"Mã đơn", "Số lượng loại phòng",
 				"Số lượng phòng", "Tổng tiền",
-				"CMND", "Khách hàng", "Tình trạng"
+				"CMND", "Khách hàng", 
+				"Số điện thoại", "Tình trạng"
 		};
 		tbl_booking = new JTable(tbl_model_booking = new DefaultTableModel(header_booking, 0)){
 
@@ -236,6 +245,8 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 				case 4:
 					return String.class;
 				case 5:
+					return String.class;
+				case 6:
 					return String.class;
 				default:
 					return String.class;
@@ -307,27 +318,42 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 		tbl_model_booking.setRowCount(0);
 		try {
 			bookings = bdao.getAll();
+			for(Booking b : bookings) 
+			{
+				Object[] row = {
+					b.getBookingID(), b.getQuantityCategory(),
+					b.getQuantityRoom(), b.getSubTotal(),
+					b.getPersonCode(), getCustomerName(b.getCustomerID()),
+					getPhoneOfCustomer(b.getCustomerID()), b.getStatus()
+				};
+				tbl_model_booking.addRow(row);
+				
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		for(Booking b : bookings) 
-		{
-			Object[] row = {
-				b.getBookingID(), b.getQuantityCategory(),
-				b.getQuantityRoom(), b.getSubTotal(),
-				b.getPersonCode(), getCustomerName(b.getCustomerID()),
-				b.getStatus()
-			};
-			tbl_model_booking.addRow(row);
-			
+	}
+	
+	private String getPhoneOfCustomer(int customerID) {
+		String code = "";
+		for(Customer c : cudao.getAll()) {
+			if(c.getCustomerID() == customerID) {
+				code = c.getPhone();
+			}
 		}
+		return code;
 	}
 	
 	private String getCustomerName(int customerID) {
 		String name = "";
 		for(Customer c : customers) {
-			if(c.getCustomerID() == customerID)
-				name = c.getFirstName() + " " + c.getMiddleName() + " " + c.getLastName();
+			if(c.getCustomerID() == customerID) {
+				if(c.getMiddleName().equals("")) {
+					name = c.getFirstName() + " " + c.getLastName();
+				} else {
+					name = c.getFirstName() + " " + c.getMiddleName() + " " + c.getLastName();
+				}
+			}
 		}
 		return name;
 	}
@@ -360,7 +386,9 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 
 		// Button
 		Box b_button = Box.createHorizontalBox();
-		b_button.add(Box.createHorizontalStrut(940));
+		b_button.add(Box.createHorizontalStrut(900));
+		b_button.add(btn_list_today);
+		b_button.add(Box.createHorizontalStrut(15));
 		b_button.add(btn_load);
 		b_button.add(Box.createHorizontalStrut(15));
 		b_button.add(btn_delete);
@@ -409,7 +437,7 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 			else {
 				String status = tbl_model_booking.getValueAt(row, 6).toString();
 				int bookingID = Integer.parseInt(tbl_model_booking.getValueAt(row, 0).toString());
-				if(status.equals("Booking")) {
+				if(status.equals("Đã nhận phòng")) {
 					int answer = JOptionPane.showConfirmDialog(null,
 							"Bạn có thực sự muốn xóa đơn đặt số " + bookingID + " không?", "Xóa thông tin đơn đặt",
 							JOptionPane.YES_NO_OPTION);
@@ -430,14 +458,14 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 			}
 			else {
 				String status = tbl_model_booking.getValueAt(index, 6).toString();
-				if(!txt_booking_id.getText().equals("") && status.equals("Booking")) {
+				if(!txt_booking_id.getText().equals("") && status.equals("Đang được đặt")) {
 					int bookingID = Integer.parseInt(txt_booking_id.getText().trim());
 					checkin(bookingID);
 				}
-				else if(status.equals("Rented")) {
+				else if(status.equals("Đã nhận phòng")) {
 					JOptionPane.showMessageDialog(null, "Đã nhận phòng!");
 				}
-				else if(status.equals("Paid")) {
+				else if(status.equals("Đã thanh toán")) {
 					JOptionPane.showMessageDialog(null, "Đã thanh toán!");
 				}
 			}
@@ -460,13 +488,43 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 				JOptionPane.showMessageDialog(null, "Bạn chưa chọn đơn đặt để xác nhận việc nhận phòng của khách hàng!");
 			}
 		}
+		else if(o.equals(btn_list_today)) {
+			tbl_model_booking.setRowCount(0);
+			try {
+				bookings = bdao.getBookingToday();
+				for(Booking b : bookings) 
+				{
+					if(!isExistInRow(b.getBookingID())) {
+						Object[] row = {
+								b.getBookingID(), b.getQuantityCategory(),
+								b.getQuantityRoom(), b.getSubTotal(),
+								b.getPersonCode(), getCustomerName(b.getCustomerID()),
+								getPhoneOfCustomer(b.getCustomerID()), b.getStatus()
+						};
+						tbl_model_booking.addRow(row);
+					}
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+	
+	private boolean isExistInRow(int bookingID) {
+		for(int i = 0; i < tbl_model_booking.getRowCount(); i++) {
+			int id = Integer.parseInt(tbl_model_booking.getValueAt(i, 0).toString());
+			if(id == bookingID) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	private void delete(int bookingID) {
 		try {
 			for(BookingDetail i : bddao.getAll()) {
 				if(i.getBookingID() == bookingID) {
-					rdao.updateStatus(i.getRoomID(), "Empty");
+					rdao.updateStatus(i.getRoomID(), "Trống");
 					bddao.delete(i.getBookingDetailID());
 				}
 			}
@@ -490,7 +548,8 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 					Object[] row = {
 							b.getBookingID(), b.getQuantityCategory(),
 							b.getQuantityRoom(), b.getSubTotal(),
-							b.getPersonCode(), getCustomerName(b.getCustomerID()), b.getStatus()
+							b.getPersonCode(), getCustomerName(b.getCustomerID()), 
+							getPhoneOfCustomer(b.getCustomerID()), b.getStatus()
 					};
 					tbl_model_booking.addRow(row);
 					status = true;
@@ -505,7 +564,7 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 				JOptionPane.YES_NO_OPTION);
 		if (answer == JOptionPane.YES_OPTION) {
 			try {
-				bdao.updateStatus(bookingID, "Rented");
+				bdao.updateStatus(bookingID, "Đã nhận phòng");
 				JOptionPane.showMessageDialog(null, "Ghi nhận việc nhận phòng của khách hàng!");
 				getData();
 			} catch (Exception e1) {

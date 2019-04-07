@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.table.DefaultTableModel;
+
+import entity.Customer;
 import entity.Room;
 import factory.ConnectionFactory;
 
@@ -112,4 +115,59 @@ public class RoomDAO extends DAOAbstract<Room> {
 		return dateFormat.format(date);
 	}
 	
+	/*
+	select bd.RoomID, b.Status, bd.CheckinDate, bd.CheckoutDate, b.CustomerID, b.BookingID
+	from BookingDetails bd
+	join Bookings b
+	on b.BookingID = bd.BookingID
+	where b.Status like N'Đang được đặt' and
+		bd.CategoryID = 1 and
+		'2019-04-07' between bd.CheckinDate and bd.CheckinDate
+	 */
+	public int getRoomByType(DefaultTableModel model, String type, int categoryID, Date date) {
+		int count = 0;
+		String sql = "select bd.RoomID, b.Status, bd.CheckinDate, bd.CheckoutDate, "
+				+ "b.CustomerID, b.BookingID from BookingDetails bd "
+				+ "join Bookings b on b.BookingID = bd.BookingID "
+				+ "where b.Status like N'" + type + "' and "
+				+ "bd.CategoryID = " + categoryID + " and '" + getDateFormatBySQL(date) 
+				+ "' between bd.CheckinDate and bd.CheckinDate";
+		try {
+			ResultSet rs = conn.prepareStatement(sql).executeQuery();
+			while(rs.next()) {
+				count++;
+				String[] row = {
+						rs.getInt(1) + "", rs.getString(2),
+						rs.getDate(3).toString(), 
+						rs.getDate(4).toString(),
+						getCustomerName(rs.getInt(5))
+				};
+				model.addRow(row);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return count;
+	}
+	
+	private String getDateFormatBySQL(Date date) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		return dateFormat.format(date);
+	}
+	
+	private String getCustomerName(int customerID) {
+		String name = "";
+		CustomerDAO cudao = new CustomerDAO();
+		for(Customer c : cudao.getAll()) {
+			if(c.getCustomerID() == customerID) {
+				if(c.getMiddleName().equals("")) {
+					name = c.getFirstName() + " " + c.getLastName();
+				}
+				else {
+					name = c.getFirstName() + " " + c.getMiddleName() + " " + c.getLastName();
+				}
+			}
+		}
+		return name;
+	}
 }

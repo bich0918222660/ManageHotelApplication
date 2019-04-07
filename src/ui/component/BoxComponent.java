@@ -119,10 +119,44 @@ public class BoxComponent {
 		return b;
 	}
 	
+	public static Box getVerticalBox(Component c1, Component c2, Component c3, Component c4, Component c5, int marginSize) {
+		Box b = Box.createVerticalBox();
+		b.add(Box.createVerticalStrut(marginSize));
+		b.add(c1);
+		b.add(Box.createVerticalStrut(marginSize));
+		b.add(c2);
+		b.add(Box.createVerticalStrut(marginSize));
+		b.add(c3);
+		b.add(Box.createVerticalStrut(marginSize));
+		b.add(c4);
+		b.add(Box.createVerticalStrut(marginSize));
+		b.add(c5);
+		b.add(Box.createVerticalStrut(marginSize));
+		return b;
+	}
+	
 	public static Box getVerticalBox(Component c, int marginSize) {
 		Box b = Box.createVerticalBox();
 		b.add(Box.createVerticalStrut(marginSize));
 		b.add(c);
+		b.add(Box.createVerticalStrut(marginSize));
+		return b;
+	}
+
+	public static Box getVerticalBox(Component c1, Component c2, Component c3, Component c4, Component c5, Component c6, int marginSize) {
+		Box b = Box.createVerticalBox();
+		b.add(Box.createVerticalStrut(marginSize));
+		b.add(c1);
+		b.add(Box.createVerticalStrut(marginSize));
+		b.add(c2);
+		b.add(Box.createVerticalStrut(marginSize));
+		b.add(c3);
+		b.add(Box.createVerticalStrut(marginSize));
+		b.add(c4);
+		b.add(Box.createVerticalStrut(marginSize));
+		b.add(c5);
+		b.add(Box.createVerticalStrut(marginSize));
+		b.add(c6);
 		b.add(Box.createVerticalStrut(marginSize));
 		return b;
 	}

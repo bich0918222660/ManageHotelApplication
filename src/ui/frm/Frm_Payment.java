@@ -259,6 +259,7 @@ public class Frm_Payment extends JFrame implements ActionListener {
 		else if(o.equals(btn_cancel)) {
 			Frm_ManageHotel_Admin frm = new Frm_ManageHotel_Admin(account);
 			frm.setVisible(true);
+			this.dispose();
 		}
 		else if(o.equals(btn_pay)) {
 			int quantityService = 0, servicePrice = 0;
@@ -270,6 +271,7 @@ public class Frm_Payment extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, "Thanh toán thành công!");
 				Frm_ManageHotel_Admin frm = new Frm_ManageHotel_Admin(account);
 				frm.setVisible(true);
+				this.dispose();
 			}
 		}
 	}

@@ -1,5 +1,4 @@
-/controller/
-/dao/
-/entity/
-/factory/
 /ui/
+/driver/
+/entity/
+/dao/

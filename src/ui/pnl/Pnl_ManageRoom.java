@@ -144,9 +144,9 @@ public class Pnl_ManageRoom extends JPanel implements ActionListener {
 		}
 
 		cbx_status = new JComboBox<>();
-		cbx_status.addItem("Empty");
-		cbx_status.addItem("Booked");
-		cbx_status.addItem("Rented");
+		cbx_status.addItem("Trống");
+		cbx_status.addItem("Đang được đặt");
+		cbx_status.addItem("Đã nhận phòng");
 
 		// JButton
 		btn_add = new JButton(new ImageIcon("imgs/ic_add.png"));
@@ -248,21 +248,28 @@ public class Pnl_ManageRoom extends JPanel implements ActionListener {
 		}
 		else if(o.equals(btn_update)) {
 			setEditable(true);
+			txt_id.setEditable(false);
 			btn_add.setEnabled(true);
 		}
 		else if(o.equals(btn_delete)) {
 			if(account.getRole().equals("Super Admin")) {
-				int id = Integer.parseInt(txt_id.getText());
-				int answer = JOptionPane.showConfirmDialog(null,
-						"Bạn có thực sự muốn xóa phòng " + id + " không?", "Xóa thông tin phòng",
-						JOptionPane.YES_NO_OPTION);
-				if (answer == JOptionPane.YES_OPTION) {
-					try {
-						rdao.delete(id);
-						getData();
-						JOptionPane.showMessageDialog(null, "Xóa thông tin phòng thành công!");
-					} catch (Exception e1) {
-						e1.printStackTrace();
+				int row = tbl_room.getSelectedRow();
+				if(row < 0) {
+					JOptionPane.showMessageDialog(null, "Bạn chưa chọn thông tin phòng cần xóa!");
+				}
+				else {
+					int id = Integer.parseInt(txt_id.getText());
+					int answer = JOptionPane.showConfirmDialog(null,
+							"Bạn có thực sự muốn xóa phòng " + id + " không?", "Xóa thông tin phòng",
+							JOptionPane.YES_NO_OPTION);
+					if (answer == JOptionPane.YES_OPTION) {
+						try {
+							rdao.delete(id);
+							getData();
+							JOptionPane.showMessageDialog(null, "Xóa thông tin phòng thành công!");
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
 					}
 				}
 			}
@@ -274,7 +281,7 @@ public class Pnl_ManageRoom extends JPanel implements ActionListener {
 			if(!btn_add.isEnabled()) {
 				Category c = (Category) cbx_categories.getSelectedItem();
 				String position = txt_position.getText();
-				Room room = new Room(position, "Empty", c.getCategoryID());
+				Room room = new Room(position, "Trống", c.getCategoryID());
 				try {
 					rdao.insert(room);
 					getData();

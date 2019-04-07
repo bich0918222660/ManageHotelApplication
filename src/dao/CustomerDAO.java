@@ -38,8 +38,8 @@ public class CustomerDAO extends DAOAbstract<Customer> {
 		java.sql.Date sqlBirthDate = new java.sql.Date(utilBirthDate.getTime());
 		
 		String sql = "insert into Customers(FirstName, MiddleName, "
-				+ "LastName, Gender, dateOfBirth, Phone, "
-				+ "Address, Email, personCode) values (?,?,?,?,?,?,?,?,?)";
+				+ "LastName, Gender, DateOfBirth, Phone, "
+				+ "Address, Email, PersonCode) values (?,?,?,?,?,?,?,?,?)";
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setString(1, t.getFirstName());
 		ps.setString(2, t.getMiddleName());
@@ -50,6 +50,37 @@ public class CustomerDAO extends DAOAbstract<Customer> {
 		ps.setString(7, t.getAddress());
 		ps.setString(8, t.getEmail());
 		ps.setString(9, t.getPersonCode());
+		return ps.executeUpdate() > 0;
+	}
+	
+	@Override
+	public boolean update(Customer t) throws Exception {
+		java.util.Date utilBirthDate = t.getDateOfBirth();
+		java.sql.Date sqlBirthDate = new java.sql.Date(utilBirthDate.getTime());
+		
+		String sql = "update Customers set FirstName = ?, MiddleName = ?, "
+				+ "LastName = ?, Gender = ?, DateOfBirth = ?, "
+				+ "Phone = ?, Address = ?, Email = ?, "
+				+ "PersonCode = ? where CustomerID = ?";
+		PreparedStatement ps = conn.prepareStatement(sql);
+		ps.setString(1, t.getFirstName());
+		ps.setString(2, t.getMiddleName());
+		ps.setString(3, t.getLastName());
+		ps.setString(4, t.getGender());
+		ps.setDate(5, sqlBirthDate);
+		ps.setString(6, t.getPhone());
+		ps.setString(7, t.getAddress());
+		ps.setString(8, t.getEmail());
+		ps.setString(9, t.getPersonCode());
+		ps.setInt(10, t.getCustomerID());
+		return ps.executeUpdate() > 0;
+	}
+	
+	@Override
+	public boolean delete(int id) throws Exception {
+		String sql = "delete Customers where CustomerID = ?";
+		PreparedStatement ps = conn.prepareStatement(sql);
+		ps.setInt(1, id);
 		return ps.executeUpdate() > 0;
 	}
 

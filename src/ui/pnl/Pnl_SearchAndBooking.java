@@ -81,6 +81,7 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 	private List<Room> rooms;
 	private List<Room> emptyRooms;
 	private List<BookingDetail> bookingDetails = new ArrayList<>();
+	private List<Integer> list = new ArrayList<>();
 	
 	// ----
 	private Customer customer = null;
@@ -247,7 +248,7 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 					int customerID = customer.getCustomerID();
 					double subTotal = Double.parseDouble(txt_subtotal.getText());
 					String personCode = customer.getPersonCode();
-					Booking booking = new Booking(quantityRoom, quantityCategory, subTotal, personCode, customerID, "Booking");
+					Booking booking = new Booking(quantityRoom, quantityCategory, subTotal, personCode, customerID, "Đang được đặt");
 					
 					try {
 						bdao.insert(booking);
@@ -258,7 +259,7 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 						
 						for(BookingDetail bd : bookingDetails) {
 							int roomID = bd.getRoomID();
-							rdao.updateStatus(roomID, "Booked");
+							rdao.updateStatus(roomID, "Đang được đặt");
 							
 							bd.setBookingID(bookingID);
 							bddao.insert(bd);
@@ -369,16 +370,19 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						int id = i.getRoomID();
+						
+						int id = Integer.parseInt(btn.getText());
 						if (tbl_selected_rooms.getRowCount() != 0) {
-							if (!isExistInSelectedRooms(id)) {
+							if(!list.contains(id)) {
 								Object[] row = { id + "", c.toString(), getDateFormat(dcs_checkin.getDate()),
 										getDateFormat(dcs_checkout.getDate()), 
 										c.getPrice(), c.getDiscount() };
 								tbl_model_selected_rooms.addRow(row);
+								list.add(id);
 							} else
 								JOptionPane.showMessageDialog(null, "Phòng " + id + " đã có trong danh sách!");
 						} else {
+							list.add(id);
 							Object[] row = { id + "", c.toString(), getDateFormat(dcs_checkin.getDate()),
 									getDateFormat(dcs_checkout.getDate()), c.getPrice(), c.getDiscount() };
 							tbl_model_selected_rooms.addRow(row);
@@ -521,7 +525,12 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 				}
 			}
 			else {
-				String customerName = customer.getFirstName() + " " + customer.getMiddleName() + " " + customer.getLastName();
+				String customerName = "";
+				if(customer.getMiddleName().equals("")) {
+					customerName = customer.getFirstName() + " " + customer.getLastName();
+				} else {
+					customerName = customer.getFirstName() + " " + customer.getMiddleName() + " " + customer.getLastName();
+				}
 				txt_name.setText(customerName);
 			}
 		}
@@ -538,10 +547,10 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 		String personCode = txt_person_code.getText().trim();
 		String gender = "";
 		if(rb_female.isSelected()) {
-			gender = "Female";
+			gender = "Nữ";
 		}
 		else {
-			gender = "Male";
+			gender = "Nam";
 		}
 		Date dateOfBirth = dcs_date_of_birth.getDate();
 		String phone = txt_customer_phone.getText().trim();
@@ -550,7 +559,13 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 		try {
 			cudao.insert(c);
 			JOptionPane.showMessageDialog(null, "Thêm mới khách hàng thành công!");
-			txt_name.setText(c.getFirstName() + " " + c.getMiddleName() + " " + c.getLastName());
+			String customerName = "";
+			if(customer.getMiddleName().equals("")) {
+				customerName = customer.getFirstName() + " " + customer.getLastName();
+			} else {
+				customerName = customer.getFirstName() + " " + customer.getMiddleName() + " " + customer.getLastName();
+			}
+			txt_name.setText(customerName);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -17,10 +17,23 @@ public class BookingDAO extends DAOAbstract<Booking> {
 		try {
 			ResultSet rs = conn.prepareStatement(sql).executeQuery();
 			while(rs.next()) {
-				list.add(0, new Booking(rs.getInt(1), rs.getInt(2), 
-						rs.getInt(3), rs.getDouble(4), 
-						rs.getString(5), rs.getInt(6), 
-						rs.getString(7)));
+				if(rs.getString(7).equals("Đang được đặt")) {
+					list.add(0, new Booking(rs.getInt(1), rs.getInt(2), 
+							rs.getInt(3), rs.getDouble(4), 
+							rs.getString(5), rs.getInt(6), 
+							rs.getString(7)));
+				}
+				else if(rs.getString(7).equals("Đã thanh toán")) {
+					list.add(list.size(), new Booking(rs.getInt(1), rs.getInt(2), 
+							rs.getInt(3), rs.getDouble(4), 
+							rs.getString(5), rs.getInt(6), 
+							rs.getString(7)));
+				} else {
+					list.add(new Booking(rs.getInt(1), rs.getInt(2), 
+							rs.getInt(3), rs.getDouble(4), 
+							rs.getString(5), rs.getInt(6), 
+							rs.getString(7)));
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -32,7 +45,7 @@ public class BookingDAO extends DAOAbstract<Booking> {
 	public boolean insert(Booking r) throws Exception {
 		String sql = "insert into Bookings("
 				+ "QuantityRoom, quantityCategory, "
-				+ "SubTotal, PersonCode, CustomerID, Status) values (?,?,?,?,?,'Booking')";
+				+ "SubTotal, PersonCode, CustomerID, Status) values (?,?,?,?,?, N'Đang được đặt')";
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setInt(1, r.getQuantityRoom());
 		ps.setInt(2, r.getQuantityCategory());
@@ -56,6 +69,46 @@ public class BookingDAO extends DAOAbstract<Booking> {
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setInt(1, id);
 		return ps.executeUpdate() > 0;
+	}
+	
+	/*
+	select b.BookingID, b.QuantityRoom, b.QuantityCategory, b.SubTotal, b.PersonCode, b.CustomerID, b.Status
+	from Bookings b join BookingDetails bd
+	on b.BookingID = bd.BookingID
+	where GETDATE() between bd.CheckinDate and bd.CheckoutDate
+	 */
+	public List<Booking> getBookingToday() throws Exception {
+		List<Booking> list = new ArrayList<>();
+		String sql = "select b.BookingID, b.QuantityRoom, b.QuantityCategory, b.SubTotal, "
+				+ "b.PersonCode, b.CustomerID, b.Status "
+				+ "from Bookings b join BookingDetails bd "
+				+ "on b.BookingID = bd.BookingID "
+				+ "where GETDATE() between bd.CheckinDate and bd.CheckoutDate";
+		try {
+			ResultSet rs = conn.prepareStatement(sql).executeQuery();
+			while(rs.next()) {
+				if(rs.getString(7).equals("Đang được đặt")) {
+					list.add(0, new Booking(rs.getInt(1), rs.getInt(2), 
+							rs.getInt(3), rs.getDouble(4), 
+							rs.getString(5), rs.getInt(6), 
+							rs.getString(7)));
+				}
+				else if(rs.getString(7).equals("Đã thanh toán")) {
+					list.add(list.size(), new Booking(rs.getInt(1), rs.getInt(2), 
+							rs.getInt(3), rs.getDouble(4), 
+							rs.getString(5), rs.getInt(6), 
+							rs.getString(7)));
+				} else {
+					list.add(new Booking(rs.getInt(1), rs.getInt(2), 
+							rs.getInt(3), rs.getDouble(4), 
+							rs.getString(5), rs.getInt(6), 
+							rs.getString(7)));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
 	}
 	
 }
