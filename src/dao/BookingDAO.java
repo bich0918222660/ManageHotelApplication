@@ -4,8 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-
 import entity.Booking;
 
 public class BookingDAO extends DAOAbstract<Booking> {

@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import entity.Booking;
 import entity.Payment;
 
 public class PaymentDAO extends DAOAbstract<Payment> {
@@ -31,7 +30,7 @@ public class PaymentDAO extends DAOAbstract<Payment> {
 	public boolean insert(Payment t) throws Exception {
 		String sql = "insert into Payments(ServiceQuantity, "
 				+ "ServicePrice, RentalPrice, SubTotal, "
-				+ "bookingID) values (?,?,?,?,?)";
+				+ "BookingID) values (?,?,?,?,?)";
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setInt(1, t.getServiceQuantity());
 		ps.setDouble(2, t.getServicePrice());
@@ -40,5 +39,21 @@ public class PaymentDAO extends DAOAbstract<Payment> {
 		ps.setInt(5, t.getBookingID());
 		return ps.executeUpdate() > 0;
 	}
+	
+	@Override
+	public boolean update(Payment t) throws Exception {
+		String sql = "update Payments set ServiceQuantity = ?, "
+				+ "ServicePrice = ?, RentalPrice = ?, "
+				+ "SubTotal = ?, BookingID = ? where PaymentID = ?";
+		PreparedStatement ps = conn.prepareStatement(sql);
+		ps.setInt(1, t.getServiceQuantity());
+		ps.setDouble(2, t.getServicePrice());
+		ps.setDouble(3, t.getRentalPrice());
+		ps.setDouble(4, t.getSubTotal());
+		ps.setInt(5, t.getBookingID());
+		ps.setInt(6, t.getPaymentID());
+		return ps.executeUpdate() > 0;
+	}
+
 
 }

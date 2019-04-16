@@ -1,6 +1,5 @@
 package dao;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
@@ -12,7 +11,6 @@ import javax.swing.table.DefaultTableModel;
 
 import entity.Customer;
 import entity.Room;
-import factory.ConnectionFactory;
 
 public class RoomDAO extends DAOAbstract<Room> {
 

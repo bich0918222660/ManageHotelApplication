@@ -7,8 +7,6 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -21,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -30,41 +29,39 @@ import dao.PaymentDAO;
 import dao.PaymentDetailDAO;
 import dao.ServiceDAO;
 import entity.Account;
+import entity.Booking;
 import entity.Payment;
 import entity.PaymentDetail;
 import entity.Service;
 import ui.component.BoxComponent;
 
 public class Frm_Payment extends JFrame implements ActionListener {
-	
-	private JLabel lbl_booking_id, lbl_service_name,
-				lbl_service_quantity, lbl_rental_price,
-				lbl_subtotal, lbl_title;
-	private JTextField txt_booking_id, txt_service_quantiy,
-				txt_rental_price, txt_subtotal;
+
+	private JLabel lbl_booking_id, lbl_service_name, lbl_service_quantity, lbl_rental_price, lbl_subtotal, lbl_title;
+	private JTextField txt_booking_id, txt_service_quantiy, txt_rental_price, txt_subtotal;
 	private JComboBox<Service> cbx_services;
 	private JButton btn_pay, btn_delete, btn_add, btn_cancel;
-	
+
 	private JPanel pnl_services;
 
 	private JTable tbl_services;
 	private DefaultTableModel tbl_model_services;
 	private JScrollPane jsp_services;
-	
+
 	private int bookingID;
 	private double rentalPrice;
 	private int quantityService = 0;
 	private double subtotal, servicePrice = 0;
 
 	private Font fontSan = new Font("Arial", Font.BOLD, 18);
-	
+
 	private ServiceDAO sdao = new ServiceDAO();
 	private PaymentDAO pdao = new PaymentDAO();
 	private PaymentDetailDAO pddao = new PaymentDetailDAO();
 	private BookingDAO bdao = new BookingDAO();
-	
+
 	private Account account;
-	
+
 	public Frm_Payment(int bookingID, double rentalPrice, Account account) {
 		setTitle("Payment - ^^!");
 		setSize(600, 600);
@@ -78,35 +75,64 @@ public class Frm_Payment extends JFrame implements ActionListener {
 		gui();
 		getData();
 	}
-	
+
 	private void getData() {
 		try {
-			for(Service s : sdao.getAll()) {
+			for (Service s : sdao.getAll()) {
 				cbx_services.addItem(s);
+			}
+			
+			Payment p = isPay();
+			if (p != null) {
+				txt_subtotal.setText(p.getSubTotal() + "");
+				for(PaymentDetail pd : pddao.getAll()) {
+					if(p.getPaymentID() == pd.getPaymentID()) {
+						Service s = getService(pd.getServiceID());
+						if(s != null) {
+							Object[] row = { s.getServiceID(), s.getServiceName(), pd.getPrice(), pd.getQuantity(), pd.getSubtotal() };
+							tbl_model_services.addRow(row);
+						}
+					}
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
+	private Service getService(int serviceID) {
+		Service service = null;
+		try {
+			for(Service s : sdao.getAll()) {
+				if(s.getServiceID() == serviceID) {
+					service = s;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return service;
+	}
 
 	private void init() {
 		// Jpanel
 		pnl_services = new JPanel(new BorderLayout());
-		pnl_services.setBorder(BorderFactory.createTitledBorder(null, "Danh sách dịch vụ đã chọn:", TitledBorder.LEFT, TitledBorder.TOP, fontSan, Color.MAGENTA));
+		pnl_services.setBorder(BorderFactory.createTitledBorder(null, "Danh sách dịch vụ đã chọn:", TitledBorder.LEFT,
+				TitledBorder.TOP, fontSan, Color.MAGENTA));
 		pnl_services.setPreferredSize(new Dimension(500, 300));
-		
+
 		// JLabel
 		lbl_title = new JLabel(new ImageIcon("imgs/ic_cash.png"));
-		
+
 		lbl_service_name = new JLabel("Dịch vụ:");
 		lbl_booking_id = new JLabel("Mã đơn đặt:");
 		lbl_service_quantity = new JLabel("Số lượng dịch vụ:");
 		lbl_subtotal = new JLabel("Tổng tiền:");
 		lbl_rental_price = new JLabel("Tiền phòng:");
-		
+
 		lbl_service_name.setPreferredSize(lbl_booking_id.getPreferredSize());
 		lbl_rental_price.setPreferredSize(lbl_service_quantity.getPreferredSize());
-		
+
 		// JTextField
 		txt_booking_id = new JTextField();
 		txt_booking_id.setText(bookingID + "");
@@ -121,11 +147,11 @@ public class Frm_Payment extends JFrame implements ActionListener {
 		subtotal = rentalPrice + servicePrice;
 		txt_subtotal.setText(subtotal + "");
 		txt_subtotal.setEditable(false);
-		
+
 		// ComboBox
 		cbx_services = new JComboBox<>();
 		cbx_services.setPreferredSize(new Dimension(160, cbx_services.getPreferredSize().height));
-		
+
 		// JButton
 		btn_pay = new JButton(new ImageIcon("imgs/ic_pay.png"));
 		btn_pay.setMargin(new Insets(0, 0, 0, 0));
@@ -136,21 +162,19 @@ public class Frm_Payment extends JFrame implements ActionListener {
 		btn_cancel.setMargin(new Insets(0, 0, 0, 0));
 		btn_cancel.setBorder(null);
 		btn_cancel.addActionListener(this);
-		
+
 		btn_delete = new JButton(new ImageIcon("imgs/ic_delete.png"));
 		btn_delete.setMargin(new Insets(0, 0, 0, 0));
 		btn_delete.setBorder(null);
 		btn_delete.addActionListener(this);
-		
+
 		btn_add = new JButton(new ImageIcon("imgs/ic_add.png"));
 		btn_add.setMargin(new Insets(0, 0, 0, 0));
 		btn_add.setBorder(null);
 		btn_add.addActionListener(this);
-		
+
 		// JTable
-		String[] header = {
-				"Mã dịch vụ", "Tên dịch vụ", "Đơn giá", "Số lượng", "Tổng tiền"
-		};
+		String[] header = { "Mã dịch vụ", "Tên dịch vụ", "Đơn giá", "Số lượng", "Tổng tiền" };
 		tbl_services = new JTable(tbl_model_services = new DefaultTableModel(header, 0)) {
 			private static final long serialVersionUID = 1L;
 
@@ -176,14 +200,14 @@ public class Frm_Payment extends JFrame implements ActionListener {
 		};
 		tbl_services.setRowHeight(25);
 		DefaultTableCellRenderer dtbl_cell_render = new DefaultTableCellRenderer();
-		dtbl_cell_render.setHorizontalAlignment(JLabel.CENTER);
+		dtbl_cell_render.setHorizontalAlignment(SwingConstants.CENTER);
 		tbl_services.setDefaultRenderer(String.class, dtbl_cell_render);
 
 		jsp_services = new JScrollPane(tbl_services);
 		jsp_services.setPreferredSize(new Dimension(jsp_services.getPreferredSize().width, 100));
-		
+
 	}
-	
+
 	private void gui() {
 		Box b_title = BoxComponent.getHorizontalBox(lbl_title, 10);
 		Box b_booking_id = BoxComponent.getHorizontalBox(lbl_booking_id, txt_booking_id, 10);
@@ -192,7 +216,7 @@ public class Frm_Payment extends JFrame implements ActionListener {
 		Box b_rental_room = BoxComponent.getHorizontalBox(lbl_rental_price, txt_rental_price, 10);
 		Box b_subtotal = BoxComponent.getHorizontalBox(lbl_subtotal, txt_subtotal, 10);
 		Box b_pay = BoxComponent.getHorizontalBox(btn_pay, 10);
-		
+
 		Box b1 = BoxComponent.getHorizontalBox(b_booking_id, b_rental_room, 20);
 		Box b2 = BoxComponent.getHorizontalBox(b_service_name, b_service_quantity, 20);
 		Box b3 = Box.createHorizontalBox();
@@ -212,7 +236,7 @@ public class Frm_Payment extends JFrame implements ActionListener {
 		b6.add(Box.createHorizontalStrut(10));
 		b6.add(btn_cancel);
 		b6.add(Box.createHorizontalStrut(10));
-		
+
 		Box b = Box.createVerticalBox();
 		b.add(Box.createVerticalStrut(30));
 		b.add(b_title);
@@ -229,43 +253,36 @@ public class Frm_Payment extends JFrame implements ActionListener {
 		b.add(Box.createVerticalStrut(10));
 		b.add(b6);
 		b.add(Box.createVerticalStrut(30));
-		
+
 		this.add(b);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
-		if(o.equals(btn_add)) {
+		if (o.equals(btn_add)) {
 			try {
 				int quantity = Integer.parseInt(txt_service_quantiy.getText());
-				if(quantity == 0) {
+				if (quantity == 0) {
 					JOptionPane.showMessageDialog(null, "Số lượng dịch vụ phải hơn 0!");
-				}
-				else if(quantity > 0) {
+				} else if (quantity > 0) {
 					addService();
-				}
-				else 
-				{
+				} else {
 					JOptionPane.showMessageDialog(null, "Bạn chưa nhập số lượng dịch vụ khách sử dụng!");
 				}
 			} catch (NumberFormatException err) {
 				JOptionPane.showMessageDialog(null, "Số lượng dịch vụ phải là chữ số!");
 			}
-		}
-		else if(o.equals(btn_delete)) {
+		} else if (o.equals(btn_delete)) {
 			deleteService();
-		}
-		else if(o.equals(btn_cancel)) {
+		} else if (o.equals(btn_cancel)) {
 			Frm_ManageHotel_Admin frm = new Frm_ManageHotel_Admin(account);
 			frm.setVisible(true);
 			this.dispose();
-		}
-		else if(o.equals(btn_pay)) {
+		} else if (o.equals(btn_pay)) {
 			int quantityService = 0, servicePrice = 0;
-			int answer = JOptionPane.showConfirmDialog(null,
-					"Khách hàng thực sự muốn thanh toán?", "Ghi nhận thanh toán",
-					JOptionPane.YES_NO_OPTION);
+			int answer = JOptionPane.showConfirmDialog(null, "Khách hàng thực sự muốn thanh toán?",
+					"Ghi nhận thanh toán", JOptionPane.YES_NO_OPTION);
 			if (answer == JOptionPane.YES_OPTION) {
 				pay();
 				JOptionPane.showMessageDialog(null, "Thanh toán thành công!");
@@ -275,37 +292,87 @@ public class Frm_Payment extends JFrame implements ActionListener {
 			}
 		}
 	}
-	
+
+	/*
+	 * Nếu đã thanh toán + đã sd dịch vụ => sử dụng thêm dịch vụ 
+	 * Kiểm tra PaymentDetails => nếu có mã dịch vụ đó rồi => update
+	 * 							==> Nếu chưa có dịch vụ đó => insert
+	 */
 	private void pay() {
-		Payment payment = new Payment(quantityService, servicePrice, rentalPrice, subtotal, bookingID);
 		try {
-			pdao.insert(payment);
-			
-			Payment p = pdao.getAll().get(pdao.getAll().size() - 1);
-			
-			if(tbl_model_services.getRowCount() > 0) {
-				for(int i = 0; i < tbl_model_services.getRowCount(); i++) {
-					int serviceID = Integer.parseInt(tbl_model_services.getValueAt(i, 0).toString());
-					int quantity = Integer.parseInt(tbl_model_services.getValueAt(i, 3).toString());
-					double price = Double.parseDouble(tbl_model_services.getValueAt(i, 2).toString());
-					double sub = Double.parseDouble(tbl_model_services.getValueAt(i, 4).toString());
-					PaymentDetail pd = new PaymentDetail(serviceID, p.getPaymentID(), quantity, price, sub);				
-					pddao.insert(pd);
-				}
+			Payment payment = isPay();
+			int paymentID = 0;
+			if (isPay() != null) {
+				payment.setServiceQuantity(quantityService);
+				payment.setRentalPrice(rentalPrice);
+				payment.setServicePrice(servicePrice);
+				payment.setSubTotal(subtotal);
+				paymentID = payment.getPaymentID();
+				pdao.update(payment);
+			} else {
+				payment = new Payment(quantityService, servicePrice, rentalPrice, subtotal, bookingID);
+				pdao.insert(payment);
+				Payment p = pdao.getAll().get(pdao.getAll().size() - 1);
+				paymentID = p.getPaymentID();
 			}
-			else {
-				PaymentDetail pd = new PaymentDetail(0, p.getPaymentID(), 0, 0, 0);				
-				pddao.insert(pd);
-			}
-			
-			bdao.updateStatus(bookingID, "Paid");
+
+			updatePaymentDetail(paymentID);
+
+			bdao.updateStatus(bookingID, "Đã thanh toán");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+	}
+
+	private void updatePaymentDetail(int paymentID) {
+		Payment p = isPay();
+		int serviceID = 0, quantity = 0;
+		double price = 0, sub = 0;
+		if (tbl_model_services.getRowCount() > 0) {
+			for (int i = 0; i < tbl_model_services.getRowCount(); i++) {
+				serviceID = Integer.parseInt(tbl_model_services.getValueAt(i, 0).toString());
+				quantity = Integer.parseInt(tbl_model_services.getValueAt(i, 3).toString());
+				price = Double.parseDouble(tbl_model_services.getValueAt(i, 2).toString());
+				sub = Double.parseDouble(tbl_model_services.getValueAt(i, 4).toString());
+				
+				try {
+					if (p != null) {
+						for (PaymentDetail pd : pddao.getAll()) {
+							if (pd.getPaymentID() == p.getPaymentID()) {
+								pd.setPrice(price);
+								pd.setQuantity(quantity);
+								pd.setSubtotal(sub);
+								pd.setServiceID(serviceID);
+								pddao.update(pd);
+							}
+						}
+
+					} else {
+						PaymentDetail pd = new PaymentDetail(serviceID, paymentID, quantity, price, sub);
+						pddao.insert(pd);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		
 	}
-	
+
+	private Payment isPay() {
+		Payment payment = null;
+		try {
+			for (Payment p : pdao.getAll()) {
+				if (p.getBookingID() == bookingID) {
+					payment = p;
+				}
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		return payment;
+	}
+
 	private void deleteService() {
 		int[] selectedRow = tbl_services.getSelectedRows();
 		if (tbl_model_services.getRowCount() != 0) {
@@ -332,24 +399,19 @@ public class Frm_Payment extends JFrame implements ActionListener {
 		Service s = (Service) cbx_services.getSelectedItem();
 		int quantity = Integer.parseInt(txt_service_quantiy.getText().trim());
 		int index = getIndexServiceInList(s);
-		if(index >= 0) {
+		if (index >= 0) {
 			int q = Integer.parseInt(tbl_model_services.getValueAt(index, 3).toString());
 			double price = Double.parseDouble(tbl_model_services.getValueAt(index, 2).toString());
 			tbl_model_services.setValueAt(q + quantity, index, 3);
 			tbl_model_services.setValueAt((q + quantity) * price, index, 4);
-		}
-		else {
-			Object[] row = {
-					s.getServiceID(), s.getServiceName(),
-					s.getPrice(), quantity,
-					s.getPrice() * quantity
-			};
+		} else {
+			Object[] row = { s.getServiceID(), s.getServiceName(), s.getPrice(), quantity, s.getPrice() * quantity };
 			tbl_model_services.addRow(row);
 		}
-		
-		servicePrice = 0; 
+
+		servicePrice = 0;
 		quantityService = 0;
-		for(int i = 0; i < tbl_services.getRowCount(); i++) {
+		for (int i = 0; i < tbl_services.getRowCount(); i++) {
 			servicePrice += Double.parseDouble(tbl_model_services.getValueAt(i, 4).toString());
 			quantityService += Integer.parseInt(tbl_model_services.getValueAt(i, 3).toString());
 		}
@@ -359,13 +421,13 @@ public class Frm_Payment extends JFrame implements ActionListener {
 
 	private int getIndexServiceInList(Service s) {
 		int index = -1;
-		for(int i = 0; i < tbl_services.getRowCount(); i++) {
+		for (int i = 0; i < tbl_services.getRowCount(); i++) {
 			String id = tbl_model_services.getValueAt(i, 0).toString();
-			if(id.equals(s.getServiceID() + "")) {
+			if (id.equals(s.getServiceID() + "")) {
 				index = i;
 			}
 		}
 		return index;
 	}
-	
+
 }

@@ -9,6 +9,7 @@ public class Clock {
 
 	public void clock(JLabel lbl_time, JLabel lbl_date) {
 		Thread clock = new Thread() {
+			@Override
 			public void run() {
 				try {
 					while (true) {

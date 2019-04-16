@@ -2,7 +2,6 @@ package ui.frm;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -27,7 +26,6 @@ import ui.pnl.Pnl_ManageCustomer;
 import ui.pnl.Pnl_ManageEmployee;
 import ui.pnl.Pnl_ManagePayments;
 import ui.pnl.Pnl_ManageRoom;
-import ui.pnl.Pnl_ManageService;
 import ui.pnl.Pnl_SearchAndBooking;
 
 public class Frm_ManageHotel_Admin extends JFrame implements ActionListener {

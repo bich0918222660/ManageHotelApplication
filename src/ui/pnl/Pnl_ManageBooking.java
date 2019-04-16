@@ -9,8 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -24,11 +22,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-
-import com.toedter.calendar.JDateChooser;
 
 import dao.BookingDAO;
 import dao.BookingDetailDAO;
@@ -255,7 +252,7 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 		};
 		tbl_booking.setRowHeight(25);
 		dtbl_cell_render = new DefaultTableCellRenderer();
-		dtbl_cell_render.setHorizontalAlignment(JLabel.CENTER);
+		dtbl_cell_render.setHorizontalAlignment(SwingConstants.CENTER);
 		tbl_booking.setDefaultRenderer(String.class, dtbl_cell_render);
 
 		String[] header_detail = { 
@@ -293,7 +290,7 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 		};
 		tbl_detail.setRowHeight(25);
 		dtbl_cell_render = new DefaultTableCellRenderer();
-		dtbl_cell_render.setHorizontalAlignment(JLabel.CENTER);
+		dtbl_cell_render.setHorizontalAlignment(SwingConstants.CENTER);
 		tbl_detail.setDefaultRenderer(String.class, dtbl_cell_render);
 
 		// JScrollPane
@@ -430,43 +427,48 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 		Object o = e.getSource();
 		String personCode = txt_person_code.getText().trim();
 		if(o.equals(btn_delete)) {
-			int row = tbl_booking.getSelectedRow();
-			if(row < 0) {
-				JOptionPane.showMessageDialog(null, "Bạn chưa chọn đơn đặt!");
-			} 
-			else {
-				String status = tbl_model_booking.getValueAt(row, 6).toString();
-				int bookingID = Integer.parseInt(tbl_model_booking.getValueAt(row, 0).toString());
-				if(status.equals("Đã nhận phòng")) {
-					int answer = JOptionPane.showConfirmDialog(null,
-							"Bạn có thực sự muốn xóa đơn đặt số " + bookingID + " không?", "Xóa thông tin đơn đặt",
-							JOptionPane.YES_NO_OPTION);
-					if (answer == JOptionPane.YES_OPTION) {
-						delete(bookingID);
-					}
-				}
+			if(tbl_booking.getRowCount() != 0) {
+				int row = tbl_booking.getSelectedRow();
+				System.out.println(row + " - " + tbl_booking.getRowCount());
+				if(row < 0) {
+					JOptionPane.showMessageDialog(null, "Bạn chưa chọn đơn đặt!");
+				} 
 				else {
-					JOptionPane.showMessageDialog(null, "Không thể xóa đơn đặt số " + bookingID + " được! Có thể đã được khách hàng nhận phòng hoặc đã trả phòng!");
+					String status = tbl_model_booking.getValueAt(row, 7).toString();
+					int bookingID = Integer.parseInt(tbl_model_booking.getValueAt(row, 0).toString());
+					if(status.equals("Đang được đặt")) {
+						int answer = JOptionPane.showConfirmDialog(null,
+								"Bạn có thực sự muốn xóa đơn đặt số " + bookingID + " không?", "Xóa thông tin đơn đặt",
+								JOptionPane.YES_NO_OPTION);
+						if (answer == JOptionPane.YES_OPTION) {
+							delete(bookingID);
+						}
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "Không thể xóa đơn đặt số " + bookingID + " được! Có thể đã được khách hàng nhận phòng hoặc đã trả phòng!");
+					}
 				}
 			}
 		}
 		else if(o.equals(btn_checkin)) {
-			int index = tbl_booking.getSelectedRow();
-			if(index < 0)
-			{
-				JOptionPane.showMessageDialog(null, "Bạn chưa chọn đơn đặt để xác nhận việc nhận phòng của khách hàng!");
-			}
-			else {
-				String status = tbl_model_booking.getValueAt(index, 6).toString();
-				if(!txt_booking_id.getText().equals("") && status.equals("Đang được đặt")) {
-					int bookingID = Integer.parseInt(txt_booking_id.getText().trim());
-					checkin(bookingID);
+			if(tbl_booking.getRowCount() != 0) {
+				int row = tbl_booking.getSelectedRow();
+				System.out.println(row);
+				if(row < 0) {
+					JOptionPane.showMessageDialog(null, "Bạn chưa chọn đơn đặt để xác nhận việc nhận phòng của khách hàng!");
 				}
-				else if(status.equals("Đã nhận phòng")) {
-					JOptionPane.showMessageDialog(null, "Đã nhận phòng!");
-				}
-				else if(status.equals("Đã thanh toán")) {
-					JOptionPane.showMessageDialog(null, "Đã thanh toán!");
+				else {
+					String status = tbl_model_booking.getValueAt(row, 7).toString();
+					if(!txt_booking_id.getText().equals("") && status.equals("Đang được đặt")) {
+						int bookingID = Integer.parseInt(txt_booking_id.getText().trim());
+						checkin(bookingID);
+					}
+					else if(status.equals("Đã nhận phòng")) {
+						JOptionPane.showMessageDialog(null, "Đã nhận phòng!");
+					}
+					else if(status.equals("Đã thanh toán")) {
+						JOptionPane.showMessageDialog(null, "Đã thanh toán!");
+					}
 				}
 			}
 		}

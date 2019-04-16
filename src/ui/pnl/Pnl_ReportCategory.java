@@ -27,8 +27,6 @@ import dao.BookingDetailDAO;
 import dao.CategoryDAO;
 import dao.CustomerDAO;
 import dao.RoomDAO;
-import entity.Booking;
-import entity.BookingDetail;
 import entity.Category;
 import entity.Customer;
 import entity.Room;

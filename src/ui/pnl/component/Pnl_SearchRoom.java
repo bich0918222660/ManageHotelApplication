@@ -9,16 +9,14 @@ import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -26,7 +24,6 @@ import javax.swing.table.DefaultTableModel;
 import com.toedter.calendar.JDateChooser;
 
 import entity.Category;
-import entity.Room;
 import ui.component.BoxComponent;
 
 public class Pnl_SearchRoom extends JPanel {
@@ -172,7 +169,7 @@ public class Pnl_SearchRoom extends JPanel {
 			}
 		};
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 		tbl_selected_rooms.setDefaultRenderer(String.class, centerRenderer);
 		tbl_selected_rooms.setRowHeight(30);
 		jsp_rooms = new JScrollPane(tbl_selected_rooms);

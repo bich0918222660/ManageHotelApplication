@@ -32,7 +32,6 @@ import com.toedter.calendar.JDateChooser;
 
 import dao.EmployeeDAO;
 import entity.Account;
-import entity.Customer;
 import entity.Employee;
 import ui.component.BoxComponent;
 import ui.service.ValidationService;

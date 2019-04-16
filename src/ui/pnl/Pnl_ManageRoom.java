@@ -84,7 +84,7 @@ public class Pnl_ManageRoom extends JPanel implements ActionListener {
 				txt_id.setText(roomID);
 				txt_position.setText(position);
 				for(int i = 0; i < cbx_categories.getItemCount(); i++) {
-					Category c = (Category) cbx_categories.getItemAt(i);
+					Category c = cbx_categories.getItemAt(i);
 					if(categoryName.equals(c.getCategoryName())) {
 						cbx_categories.setSelectedIndex(i);
 						break;

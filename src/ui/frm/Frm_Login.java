@@ -159,6 +159,7 @@ public class Frm_Login extends JFrame implements ActionListener {
 			return (new Dimension(400, 400));
 		}
 
+		@Override
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			g.drawImage(image, 0, 0, this);

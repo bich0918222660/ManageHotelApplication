@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -108,7 +109,7 @@ public class Pnl_Booking extends JPanel {
 		};
 		tbl_reservations.setRowHeight(30);
 		dtbl_cell_render = new DefaultTableCellRenderer();
-		dtbl_cell_render.setHorizontalAlignment(JLabel.CENTER);
+		dtbl_cell_render.setHorizontalAlignment(SwingConstants.CENTER);
 		tbl_reservations.setDefaultRenderer(String.class, dtbl_cell_render);
 
 		jsp_reservations = new JScrollPane(tbl_reservations);
