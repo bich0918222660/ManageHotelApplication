@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -71,7 +72,7 @@ public class Pnl_ManagePayments extends JPanel {
 				int row = tbl_payment.getSelectedRow();
 				
 				int paymentID = Integer.parseInt(tbl_model_payment.getValueAt(row, 0).toString());
-				int bookingID = Integer.parseInt(tbl_model_payment.getValueAt(row, 5).toString());
+				int bookingID = Integer.parseInt(tbl_model_payment.getValueAt(row, 6).toString());
 				
 				try {
 					for(PaymentDetail i : pddao.getAll()) {
@@ -138,7 +139,7 @@ public class Pnl_ManagePayments extends JPanel {
 				Object[] row = {
 					p.getPaymentID() + "", p.getServiceQuantity() + "", 
 					p.getServicePrice(), p.getRentalPrice(), 
-					p.getSubTotal(), p.getBookingID() + ""
+					p.getSubTotal(), getDateFormat(p.getPaymentDate()), p.getBookingID() + ""
 				};
 				tbl_model_payment.addRow(row);
 			}
@@ -232,7 +233,7 @@ public class Pnl_ManagePayments extends JPanel {
 
 		String[] headerPayment = {
 			"#", "Số lượng dịch vụ", "Tổng tiền dịch vụ", 
-			"Tiền thuê phòng", "Tổng tiền", "Mã đơn đặt"
+			"Tiền thuê phòng", "Tổng tiền", "Ngày thanh toán", "Mã đơn đặt"
 		};
 		tbl_payment = new JTable(tbl_model_payment = new DefaultTableModel(headerPayment, 0)) {
 			private static final long serialVersionUID = 1L;
@@ -293,6 +294,11 @@ public class Pnl_ManagePayments extends JPanel {
 		Box bh = BoxComponent.getHorizontalBox(bv, 10);
 		
 		add(bh);
+	}
+	
+	private String getDateFormat(Date date) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		return dateFormat.format(date);
 	}
 
 }

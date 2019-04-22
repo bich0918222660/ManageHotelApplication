@@ -567,6 +567,11 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 		if (answer == JOptionPane.YES_OPTION) {
 			try {
 				bdao.updateStatus(bookingID, "Đã nhận phòng");
+				for(BookingDetail bd : bddao.getAll()) {
+					if(bd.getBookingID() == bookingID) {
+						rdao.updateStatus(bd.getRoomID(), "Đã nhận phòng");
+					}
+				}
 				JOptionPane.showMessageDialog(null, "Ghi nhận việc nhận phòng của khách hàng!");
 				getData();
 			} catch (Exception e1) {

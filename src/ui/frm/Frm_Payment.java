@@ -25,11 +25,14 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import dao.BookingDAO;
+import dao.BookingDetailDAO;
 import dao.PaymentDAO;
 import dao.PaymentDetailDAO;
+import dao.RoomDAO;
 import dao.ServiceDAO;
 import entity.Account;
 import entity.Booking;
+import entity.BookingDetail;
 import entity.Payment;
 import entity.PaymentDetail;
 import entity.Service;
@@ -59,6 +62,8 @@ public class Frm_Payment extends JFrame implements ActionListener {
 	private PaymentDAO pdao = new PaymentDAO();
 	private PaymentDetailDAO pddao = new PaymentDetailDAO();
 	private BookingDAO bdao = new BookingDAO();
+	private BookingDetailDAO bddao = new BookingDetailDAO();
+	private RoomDAO rdao = new RoomDAO();
 
 	private Account account;
 
@@ -81,15 +86,16 @@ public class Frm_Payment extends JFrame implements ActionListener {
 			for (Service s : sdao.getAll()) {
 				cbx_services.addItem(s);
 			}
-			
+
 			Payment p = isPay();
 			if (p != null) {
 				txt_subtotal.setText(p.getSubTotal() + "");
-				for(PaymentDetail pd : pddao.getAll()) {
-					if(p.getPaymentID() == pd.getPaymentID()) {
+				for (PaymentDetail pd : pddao.getAll()) {
+					if (p.getPaymentID() == pd.getPaymentID()) {
 						Service s = getService(pd.getServiceID());
-						if(s != null) {
-							Object[] row = { s.getServiceID(), s.getServiceName(), pd.getPrice(), pd.getQuantity(), pd.getSubtotal() };
+						if (s != null) {
+							Object[] row = { s.getServiceID(), s.getServiceName(), pd.getPrice(), pd.getQuantity(),
+									pd.getSubtotal() };
 							tbl_model_services.addRow(row);
 						}
 					}
@@ -99,12 +105,12 @@ public class Frm_Payment extends JFrame implements ActionListener {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private Service getService(int serviceID) {
 		Service service = null;
 		try {
-			for(Service s : sdao.getAll()) {
-				if(s.getServiceID() == serviceID) {
+			for (Service s : sdao.getAll()) {
+				if (s.getServiceID() == serviceID) {
 					service = s;
 				}
 			}
@@ -294,9 +300,9 @@ public class Frm_Payment extends JFrame implements ActionListener {
 	}
 
 	/*
-	 * Nếu đã thanh toán + đã sd dịch vụ => sử dụng thêm dịch vụ 
-	 * Kiểm tra PaymentDetails => nếu có mã dịch vụ đó rồi => update
-	 * 							==> Nếu chưa có dịch vụ đó => insert
+	 * Nếu đã thanh toán + đã sd dịch vụ => sử dụng thêm dịch vụ Kiểm tra
+	 * PaymentDetails => nếu có mã dịch vụ đó rồi => update ==> Nếu chưa có dịch vụ
+	 * đó => insert
 	 */
 	private void pay() {
 		try {
@@ -319,6 +325,11 @@ public class Frm_Payment extends JFrame implements ActionListener {
 			updatePaymentDetail(paymentID);
 
 			bdao.updateStatus(bookingID, "Đã thanh toán");
+			for (BookingDetail bd : bddao.getAll()) {
+				if (bd.getBookingID() == bookingID) {
+					rdao.updateStatus(bd.getRoomID(), "Trống");
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -328,26 +339,25 @@ public class Frm_Payment extends JFrame implements ActionListener {
 		Payment p = isPay();
 		int serviceID = 0, quantity = 0;
 		double price = 0, sub = 0;
-		if (tbl_model_services.getRowCount() > 0) {
+		if (tbl_model_services.getRowCount() != 0) {
 			for (int i = 0; i < tbl_model_services.getRowCount(); i++) {
 				serviceID = Integer.parseInt(tbl_model_services.getValueAt(i, 0).toString());
 				quantity = Integer.parseInt(tbl_model_services.getValueAt(i, 3).toString());
 				price = Double.parseDouble(tbl_model_services.getValueAt(i, 2).toString());
 				sub = Double.parseDouble(tbl_model_services.getValueAt(i, 4).toString());
-				
-				try {
-					if (p != null) {
-						for (PaymentDetail pd : pddao.getAll()) {
-							if (pd.getPaymentID() == p.getPaymentID()) {
-								pd.setPrice(price);
-								pd.setQuantity(quantity);
-								pd.setSubtotal(sub);
-								pd.setServiceID(serviceID);
-								pddao.update(pd);
-							}
-						}
 
-					} else {
+				try {
+					for (PaymentDetail pd : pddao.getAll()) {
+						if (pd.getPaymentID() == p.getPaymentID()) {
+							pd.setPrice(price);
+							pd.setQuantity(quantity);
+							pd.setSubtotal(sub);
+							pd.setServiceID(serviceID);
+							pddao.update(pd);
+						}
+					}
+
+					if (!isPaymentDetail(p.getPaymentID())) {
 						PaymentDetail pd = new PaymentDetail(serviceID, paymentID, quantity, price, sub);
 						pddao.insert(pd);
 					}
@@ -356,7 +366,20 @@ public class Frm_Payment extends JFrame implements ActionListener {
 				}
 			}
 		}
-		
+
+	}
+	
+	private boolean isPaymentDetail(int paymentID) {
+		try {
+			for (PaymentDetail pd : pddao.getAll()) {
+				if (pd.getPaymentID() == paymentID) {
+					return true;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	private Payment isPay() {

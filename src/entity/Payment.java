@@ -1,5 +1,7 @@
 package entity;
 
+import java.util.Date;
+
 public class Payment {
 	
 	/*
@@ -17,11 +19,22 @@ public class Payment {
 	private double rentalPrice;
 	private double subTotal;
 	private int bookingID;
+	private Date paymentDate;
 	
 	public Payment() {
 		super();
 	}
 
+	public Payment(int serviceQuantity, double servicePrice, double rentalPrice, double subTotal, int bookingID, Date paymentDate) {
+		super();
+		this.serviceQuantity = serviceQuantity;
+		this.servicePrice = servicePrice;
+		this.rentalPrice = rentalPrice;
+		this.subTotal = subTotal;
+		this.bookingID = bookingID;
+		this.paymentDate = paymentDate;
+	}
+	
 	public Payment(int serviceQuantity, double servicePrice, double rentalPrice, double subTotal, int bookingID) {
 		super();
 		this.serviceQuantity = serviceQuantity;
@@ -32,7 +45,7 @@ public class Payment {
 	}
 	
 	public Payment(int paymentID, int serviceQuantity, double servicePrice, double rentalPrice, double subTotal,
-			int bookingID) {
+			int bookingID, Date paymentDate) {
 		super();
 		this.paymentID = paymentID;
 		this.serviceQuantity = serviceQuantity;
@@ -40,6 +53,15 @@ public class Payment {
 		this.rentalPrice = rentalPrice;
 		this.subTotal = subTotal;
 		this.bookingID = bookingID;
+		this.paymentDate = paymentDate;
+	}
+	
+	public Date getPaymentDate() {
+		return paymentDate;
+	}
+
+	public void setPaymentDate(Date paymentDate) {
+		this.paymentDate = paymentDate;
 	}
 
 	public int getPaymentID() {

@@ -18,7 +18,7 @@ public class PaymentDAO extends DAOAbstract<Payment> {
 			while(rs.next()) {
 				list.add(new Payment(rs.getInt(1), rs.getInt(2), 
 						rs.getDouble(3), rs.getDouble(4), 
-						rs.getDouble(5), rs.getInt(6)));
+						rs.getDouble(5), rs.getInt(6), rs.getDate(7)));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -30,7 +30,7 @@ public class PaymentDAO extends DAOAbstract<Payment> {
 	public boolean insert(Payment t) throws Exception {
 		String sql = "insert into Payments(ServiceQuantity, "
 				+ "ServicePrice, RentalPrice, SubTotal, "
-				+ "BookingID) values (?,?,?,?,?)";
+				+ "BookingID, PaymentDate) values (?,?,?,?,?,getdate())";
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setInt(1, t.getServiceQuantity());
 		ps.setDouble(2, t.getServicePrice());
@@ -44,7 +44,8 @@ public class PaymentDAO extends DAOAbstract<Payment> {
 	public boolean update(Payment t) throws Exception {
 		String sql = "update Payments set ServiceQuantity = ?, "
 				+ "ServicePrice = ?, RentalPrice = ?, "
-				+ "SubTotal = ?, BookingID = ? where PaymentID = ?";
+				+ "SubTotal = ?, BookingID = ?, "
+				+ "PaymentDate = getdate() where PaymentID = ?";
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setInt(1, t.getServiceQuantity());
 		ps.setDouble(2, t.getServicePrice());

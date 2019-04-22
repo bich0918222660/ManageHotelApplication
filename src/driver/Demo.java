@@ -1,67 +1,35 @@
 package driver;
 
-import java.text.DecimalFormat;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 
-import javax.swing.JFrame;  
-import javax.swing.SwingUtilities;  
-import javax.swing.WindowConstants;  
-  
-import org.jfree.chart.ChartFactory;  
-import org.jfree.chart.ChartPanel;  
-import org.jfree.chart.JFreeChart;  
-import org.jfree.chart.labels.PieSectionLabelGenerator;  
-import org.jfree.chart.labels.StandardPieSectionLabelGenerator;  
-import org.jfree.chart.plot.PiePlot;  
-import org.jfree.data.general.DefaultPieDataset;  
-import org.jfree.data.general.PieDataset;  
+import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 
-public class Demo extends JFrame {
+public class Demo {
 
-	private static final long serialVersionUID = 6294689542092367723L;  
-	  
-	  public Demo(String title) {  
-	    super(title);  
-	  
-	    // Create dataset  
-	    PieDataset dataset = createDataset();  
-	  
-	    // Create chart  
-	    JFreeChart chart = ChartFactory.createPieChart(  
-	        "Pie Chart Example",  
-	        dataset,  
-	        true,   
-	        true,  
-	        false);  
-	  
-	    //Format Label  
-	    PieSectionLabelGenerator labelGenerator = new StandardPieSectionLabelGenerator(  
-	        "Marks {0} : ({2})", new DecimalFormat("0"), new DecimalFormat("0%"));  
-	    ((PiePlot) chart.getPlot()).setLabelGenerator(labelGenerator);  
-	      
-	    // Create Panel  
-	    ChartPanel panel = new ChartPanel(chart);  
-	    setContentPane(panel);  
-	  }  
-	  
-	  private PieDataset createDataset() {  
-	  
-	    DefaultPieDataset dataset=new DefaultPieDataset();  
-	    dataset.setValue("Phòng đơn", 5);  
-	    dataset.setValue("Phòng đôi", 10);  
-	    dataset.setValue("Phòng đơn VIP", 6);  
-	    dataset.setValue("Phòng đôi VIP", 4);  
-	    dataset.setValue("Phòng ba", 2);  
-	    return dataset;  
-	  }  
-	  
-	  public static void main(String[] args) {  
-	    SwingUtilities.invokeLater(() -> {  
-	      Demo example = new Demo("Pie Chart Example");  
-	      example.setSize(800, 400);  
-	      example.setLocationRelativeTo(null);  
-	      example.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);  
-	      example.setVisible(true);  
-	    });  
-	  }  
+	public static void main(String[] args) {
+		// tạo một document
+        Document document = new Document();
+
+        try {
+        	// khởi tạo một PdfWriter truyền vào document và FileOutputStream
+            PdfWriter.getInstance(document, new FileOutputStream("F:\\demopdf.pdf"));
+
+            // mở file để thực hiện viết
+            document.open();
+            // thêm nội dung sử dụng add function
+            document.add(new Paragraph("A Hello World PDF document."));
+            // đóng file
+            document.close();
+
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+	}
 	
 }
