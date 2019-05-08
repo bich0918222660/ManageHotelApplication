@@ -1,6 +1,7 @@
 package ui.pnl;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
@@ -87,7 +88,6 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 		init();
 		gui();
 		getCategories();
-//		getRooms();
 	}
 
 	private void init() {
@@ -171,16 +171,6 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 		categories = cdao.getAll();
 		for (Category c : categories) {
 			cbx_categories.addItem(c);
-		}
-	}
-
-	private void getRooms() {
-		rooms = rdao.getAll();
-		int count = 1;
-		for (Room r : rooms) {
-			System.out.println(count);
-			pnl_empty_rooms.add(pnl_search.getButton(count, r.getRoomID() + ""));
-			count++;
 		}
 	}
 
@@ -365,7 +355,8 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 		int daysBetween = daysBetween(checkinDate, checkoutDate);
 		if (daysBetween > 0) {
 			for (Room i : emptyRooms) {
-				JButton btn = pnl_search.getButton(findRoom(i.getRoomID()), i.getRoomID() + "");
+				JButton btn = new JButton(i.getRoomID() + "");
+				btn.setPreferredSize(new Dimension(90, 45));
 				btn.addActionListener(new ActionListener() {
 
 					@Override
@@ -406,6 +397,7 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 					}
 				}
 			}
+			JOptionPane.showMessageDialog(null, "Xóa thành công!");
 		} else {
 			JOptionPane.showMessageDialog(null, "Danh sách hiện đang trống!");
 		}
@@ -493,6 +485,7 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 					}
 				}
 			}
+			JOptionPane.showMessageDialog(null, "Xóa thành công!");
 		} else {
 			JOptionPane.showMessageDialog(null, "Danh sách hiện đang trống!");
 		}

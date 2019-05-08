@@ -77,7 +77,7 @@ public class CategoryDAO extends DAOAbstract<Category> {
 		return ps.executeUpdate() > 0;
 	}
 	
-	public List<StatisticalCategory> statistical() {
+	public List<StatisticalCategory> statisticsByCategory() {
 		List<StatisticalCategory> list = new ArrayList<>();
 		String sql = "select c.CategoryName, count(c.CategoryID) "
 				+ "from Categories c join BookingDetails bd "

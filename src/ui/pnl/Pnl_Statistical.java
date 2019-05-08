@@ -57,7 +57,7 @@ public class Pnl_Statistical extends JPanel {
 
 	private PieDataset createDataset() {
 		DefaultPieDataset dataset = new DefaultPieDataset();
-		for(StatisticalCategory sc: dao.statistical()) {
+		for(StatisticalCategory sc: dao.statisticsByCategory()) {
 			dataset.setValue(sc.getCategoryName(), sc.getCount());
 		}
 		return dataset;

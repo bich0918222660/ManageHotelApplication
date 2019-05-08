@@ -37,13 +37,6 @@ public class Pnl_SearchRoom extends JPanel {
 	private JComboBox<Category> cbx_categories;
 	
 	private JButton btn_search, btn_delete, btn_add;
-	private JButton btn1, btn2, btn3, btn4,
-				btn5, btn6, btn7, btn8, btn9, btn10,
-				btn11, btn12, btn13, btn14, btn15,
-				btn16, btn17, btn18, btn19,
-				btn20, btn21, btn22, btn23, btn29,
-				btn26, btn27, btn28, btn24, btn25,
-				btn30, btn31, btn32, btn33, btn34;
 	
 	private JPanel pnl_empty_rooms, pnl_selected_rooms;
 
@@ -99,41 +92,6 @@ public class Pnl_SearchRoom extends JPanel {
 		btn_add = new JButton(new ImageIcon("imgs/ic_addcart.png"));
 		btn_add.setMargin(new Insets(0, 0, 0, 0));
 		btn_add.setBorder(null);
-		
-		btn1 = new JButton("");
-		btn2 = new JButton("");
-		btn3 = new JButton("");
-		btn4 = new JButton("");
-		btn5 = new JButton("");
-		btn6 = new JButton("");
-		btn7 = new JButton("");
-		btn8 = new JButton("");
-		btn9 = new JButton("");
-		btn10 = new JButton("");
-		btn11 = new JButton("");
-		btn12 = new JButton("");
-		btn13 = new JButton("");
-		btn14 = new JButton("");
-		btn15 = new JButton("");
-		btn16 = new JButton("");
-		btn17 = new JButton("");
-		btn18 = new JButton("");
-		btn19 = new JButton("");
-		btn20 = new JButton("");
-		btn21 = new JButton("");
-		btn22 = new JButton("");
-		btn23 = new JButton("");
-		btn24 = new JButton("");
-		btn25 = new JButton("");
-		btn26 = new JButton("");
-		btn27 = new JButton("");
-		btn28 = new JButton("");
-		btn29 = new JButton("");
-		btn30 = new JButton("");
-		btn31 = new JButton("");
-		btn32 = new JButton("");
-		btn33 = new JButton("");
-		btn34 = new JButton("");
 		
 		// JList
 		String[] header = {
@@ -209,117 +167,6 @@ public class Pnl_SearchRoom extends JPanel {
 	}
 	
 	// Getter
-	public JButton getButton(int index, String name) {
-		JButton btn = new JButton();
-		switch (index) {
-			case 1:
-				btn = btn1;
-				break;
-			case 2:
-				btn = btn2;
-				break;
-			case 3:
-				btn = btn3;
-				break;
-			case 4:
-				btn = btn4;
-				break;
-			case 5:
-				btn = btn5;
-				break;
-			case 6:
-				btn = btn6;
-				break;
-			case 7:
-				btn = btn7;
-				break;
-			case 8:
-				btn = btn8;
-				break;
-			case 9:
-				btn = btn9;
-				break;
-			case 10:
-				btn = btn10;
-				break;
-			case 11:
-				btn = btn11;
-				break;
-			case 12:
-				btn = btn12;
-				break;
-			case 13:
-				btn = btn13;
-				break;
-			case 14:
-				btn = btn14;
-				break;
-			case 15:
-				btn = btn15;
-				break;
-			case 16:
-				btn = btn16;
-				break;
-			case 17:
-				btn = btn17;
-				break;
-			case 18:
-				btn = btn18;
-				break;
-			case 19:
-				btn = btn19;
-				break;
-			case 20:
-				btn = btn20;
-				break;
-			case 21:
-				btn = btn21;
-				break;
-			case 22:
-				btn = btn22;
-				break;
-			case 23:
-				btn = btn23;
-				break;
-			case 24:
-				btn = btn24;
-				break;
-			case 25:
-				btn = btn25;
-				break;
-			case 26:
-				btn = btn26;
-				break;
-			case 27:
-				btn = btn27;
-				break;
-			case 28:
-				btn = btn28;
-				break;
-			case 29:
-				btn = btn29;
-				break;
-			case 30:
-				btn = btn30;
-				break;
-			case 31:
-				btn = btn31;
-				break;
-			case 32:
-				btn = btn32;
-				break;
-			case 33:
-				btn = btn33;
-				break;
-			case 34:
-				btn = btn34;
-				break;
-		}
-		btn.setText(name);
-		btn.setPreferredSize(new Dimension(90, 45));
-		return btn;
-	}
-
 	public JDateChooser getDcs_checkin() {
 		return dcs_checkin;
 	}

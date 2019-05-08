@@ -32,7 +32,7 @@ import entity.Customer;
 import entity.Room;
 import ui.component.BoxComponent;
 
-public class Pnl_ReportCategory extends JPanel implements ActionListener {
+public class Pnl_ReportStatusCategory extends JPanel implements ActionListener {
 
 	private JLabel lbl_category, lbl_checkin, lbl_checkout, lbl_category_id, lbl_price, lbl_discount, lbl_type;
 	private JTextField txt_category_id, txt_price, txt_discount, txt_type;
@@ -48,11 +48,9 @@ public class Pnl_ReportCategory extends JPanel implements ActionListener {
 	
 	private CategoryDAO cdao = new CategoryDAO();
 	private RoomDAO rdao = new RoomDAO();
-	private BookingDetailDAO bddao = new BookingDetailDAO();
 	private CustomerDAO cudao = new CustomerDAO();
-	private BookingDAO bdao = new BookingDAO();
 	
-	public Pnl_ReportCategory() {
+	public Pnl_ReportStatusCategory() {
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createTitledBorder(null, "Báo cáo trạng thái loại phòng:", TitledBorder.LEFT, TitledBorder.TOP, fontSan, Color.MAGENTA));
 		init();

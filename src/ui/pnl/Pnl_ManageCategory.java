@@ -331,7 +331,7 @@ public class Pnl_ManageCategory extends JPanel implements ActionListener {
 					if (answer == JOptionPane.YES_OPTION) {
 						try {
 							cdao.delete(id);
-							JOptionPane.showMessageDialog(null, "Xóa thành công!");
+							JOptionPane.showMessageDialog(null, "Xóa thông tin loại phòng thành công!");
 							getData();
 							resetText();
 						} catch (Exception e1) {

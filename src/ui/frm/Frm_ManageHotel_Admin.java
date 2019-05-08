@@ -199,16 +199,26 @@ public class Frm_ManageHotel_Admin extends JFrame implements ActionListener {
 			revalidate();
 		}
 		else if(o.equals(btnManageCategory)) {
-			pnlBody.removeAll();
-			Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageCategory(account), 20), 20);
-			pnlBody.add(b);
-			revalidate();
+			if(account.getRole().equals("Super Admin")) {
+				pnlBody.removeAll();
+				Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageCategory(account), 20), 20);
+				pnlBody.add(b);
+				revalidate();
+			}
+			else {
+				JOptionPane.showMessageDialog(null, "Bạn chưa được cấp quyền!");
+			}
 		}
 		else if(o.equals(btnManageRoom)) {
-			pnlBody.removeAll();
-			Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageRoom(account), 20), 20);
-			pnlBody.add(b);
-			revalidate();
+			if(account.getRole().equals("Super Admin")) {
+				pnlBody.removeAll();
+				Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageRoom(account), 20), 20);
+				pnlBody.add(b);
+				revalidate();
+			}
+			else {
+				JOptionPane.showMessageDialog(null, "Bạn chưa được cấp quyền!");
+			}
 		}
 		else if(o.equals(btnManageCustomer)) {
 			pnlBody.removeAll();

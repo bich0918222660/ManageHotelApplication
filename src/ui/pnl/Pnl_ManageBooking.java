@@ -39,6 +39,7 @@ import entity.Category;
 import entity.Customer;
 import ui.component.BoxComponent;
 import ui.frm.Frm_Payment;
+import ui.service.ValidationService;
 
 public class Pnl_ManageBooking extends JPanel implements ActionListener {
 
@@ -473,7 +474,7 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 			}
 		}
 		else if(o.equals(btn__person_code)) {
-			if(!personCode.equals("")) 
+			if(ValidationService.validatePersonCode(personCode)) 
 			{
 				FindBookingByPersonCode(personCode);
 			}

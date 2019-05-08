@@ -37,6 +37,7 @@ import entity.Payment;
 import entity.PaymentDetail;
 import entity.Service;
 import ui.component.BoxComponent;
+import ui.service.ValidationService;
 
 public class Frm_Payment extends JFrame implements ActionListener {
 
@@ -267,17 +268,11 @@ public class Frm_Payment extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
 		if (o.equals(btn_add)) {
-			try {
-				int quantity = Integer.parseInt(txt_service_quantiy.getText());
-				if (quantity == 0) {
-					JOptionPane.showMessageDialog(null, "Số lượng dịch vụ phải hơn 0!");
-				} else if (quantity > 0) {
-					addService();
-				} else {
-					JOptionPane.showMessageDialog(null, "Bạn chưa nhập số lượng dịch vụ khách sử dụng!");
-				}
-			} catch (NumberFormatException err) {
-				JOptionPane.showMessageDialog(null, "Số lượng dịch vụ phải là chữ số!");
+			if(txt_service_quantiy.getText().trim().equals("0")) {
+				JOptionPane.showMessageDialog(null, "Số lượng phải lớn hơn 0");
+			}
+			else if(ValidationService.validateQuantity(txt_service_quantiy.getText())) {
+				addService();
 			}
 		} else if (o.equals(btn_delete)) {
 			deleteService();
@@ -347,17 +342,7 @@ public class Frm_Payment extends JFrame implements ActionListener {
 				sub = Double.parseDouble(tbl_model_services.getValueAt(i, 4).toString());
 
 				try {
-					for (PaymentDetail pd : pddao.getAll()) {
-						if (pd.getPaymentID() == p.getPaymentID()) {
-							pd.setPrice(price);
-							pd.setQuantity(quantity);
-							pd.setSubtotal(sub);
-							pd.setServiceID(serviceID);
-							pddao.update(pd);
-						}
-					}
-
-					if (!isPaymentDetail(p.getPaymentID())) {
+					if (!isPaymentDetail(p.getPaymentID(), serviceID, price, quantity, sub)) {
 						PaymentDetail pd = new PaymentDetail(serviceID, paymentID, quantity, price, sub);
 						pddao.insert(pd);
 					}
@@ -369,10 +354,15 @@ public class Frm_Payment extends JFrame implements ActionListener {
 
 	}
 	
-	private boolean isPaymentDetail(int paymentID) {
+	private boolean isPaymentDetail(int paymentID, int serviceID, double price, int quantity, double sub) {
 		try {
 			for (PaymentDetail pd : pddao.getAll()) {
-				if (pd.getPaymentID() == paymentID) {
+				if (pd.getPaymentID() == paymentID && pd.getServiceID() == serviceID) {
+					pd.setPrice(price);
+					pd.setQuantity(quantity);
+					pd.setSubtotal(sub);
+					pd.setServiceID(serviceID);
+					pddao.update(pd);
 					return true;
 				}
 			}
