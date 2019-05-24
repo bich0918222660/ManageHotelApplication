@@ -19,6 +19,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 import ui.component.BoxComponent;
 
@@ -63,17 +64,20 @@ public class Pnl_Booking extends JPanel {
 		txt_person_code = new JTextField();
 
 		// JButton
-		btn_booking = new JButton(new ImageIcon("imgs/ic_yes.png"));
+		btn_booking = new JButton(new ImageIcon(this.getClass().getResource("/ic_yes.png")));
 		btn_booking.setMargin(new Insets(0, 0, 0, 0));
 		btn_booking.setBorder(null);
+		btn_booking.setBackground(Color.decode("#ebebeb"));
 		
-		btn_delete = new JButton(new ImageIcon("imgs/ic_delete.png"));
+		btn_delete = new JButton(new ImageIcon(this.getClass().getResource("/ic_delete.png")));
 		btn_delete.setMargin(new Insets(0, 0, 0, 0));
 		btn_delete.setBorder(null);
+		btn_delete.setBackground(Color.decode("#ebebeb"));
 		
-		btn_check = new JButton(new ImageIcon("imgs/ic_check.png"));
+		btn_check = new JButton(new ImageIcon(this.getClass().getResource("/ic_check.png")));
 		btn_check.setMargin(new Insets(0, 0, 0, 0));
 		btn_check.setBorder(null);
+		btn_check.setBackground(Color.decode("#ebebeb"));
 
 		// JTable
 		String[] header = { 
@@ -107,10 +111,15 @@ public class Pnl_Booking extends JPanel {
 				}
 			}
 		};
-		tbl_reservations.setRowHeight(30);
+		tbl_reservations.setRowHeight(35);
 		dtbl_cell_render = new DefaultTableCellRenderer();
 		dtbl_cell_render.setHorizontalAlignment(SwingConstants.CENTER);
 		tbl_reservations.setDefaultRenderer(String.class, dtbl_cell_render);
+		
+		JTableHeader tableHeader = tbl_reservations.getTableHeader();
+		tableHeader.setBackground(Color.decode("#67e0fe"));
+		tableHeader.setFont(new Font("Arial", Font.BOLD, 13));
+		tableHeader.setPreferredSize(new Dimension(tableHeader.getPreferredSize().width, 35));
 
 		jsp_reservations = new JScrollPane(tbl_reservations);
 		jsp_reservations.setPreferredSize(new Dimension(jsp_reservations.getPreferredSize().width, 400));
@@ -138,7 +147,7 @@ public class Pnl_Booking extends JPanel {
 		// Reservations
 		Box b_table = BoxComponent.getHorizontalBox(jsp_reservations, 10);
 		Box b_button = Box.createHorizontalBox();
-		b_button.add(Box.createHorizontalStrut(995));
+		b_button.add(Box.createHorizontalStrut(1050));
 		b_button.add(btn_delete);
 		b_button.add(Box.createHorizontalStrut(20));
 		b_button.add(btn_booking);

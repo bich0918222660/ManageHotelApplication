@@ -69,7 +69,7 @@ public class Frm_Payment extends JFrame implements ActionListener {
 	private Account account;
 
 	public Frm_Payment(int bookingID, double rentalPrice, Account account) {
-		setTitle("Payment - ^^!");
+		setTitle("Thanh toán hóa đơn - ^^!");
 		setSize(600, 600);
 		setResizable(false);
 		setLocationRelativeTo(null); // canh giua
@@ -160,22 +160,22 @@ public class Frm_Payment extends JFrame implements ActionListener {
 		cbx_services.setPreferredSize(new Dimension(160, cbx_services.getPreferredSize().height));
 
 		// JButton
-		btn_pay = new JButton(new ImageIcon("imgs/ic_pay.png"));
+		btn_pay = new JButton(new ImageIcon(this.getClass().getResource("/ic_pay.png")));
 		btn_pay.setMargin(new Insets(0, 0, 0, 0));
 		btn_pay.setBorder(null);
 		btn_pay.addActionListener(this);
 
-		btn_cancel = new JButton(new ImageIcon("imgs/ic_cancel.png"));
+		btn_cancel = new JButton(new ImageIcon(this.getClass().getResource("/ic_cancel.png")));
 		btn_cancel.setMargin(new Insets(0, 0, 0, 0));
 		btn_cancel.setBorder(null);
 		btn_cancel.addActionListener(this);
 
-		btn_delete = new JButton(new ImageIcon("imgs/ic_delete.png"));
+		btn_delete = new JButton(new ImageIcon(this.getClass().getResource("/ic_delete.png")));
 		btn_delete.setMargin(new Insets(0, 0, 0, 0));
 		btn_delete.setBorder(null);
 		btn_delete.addActionListener(this);
 
-		btn_add = new JButton(new ImageIcon("imgs/ic_add.png"));
+		btn_add = new JButton(new ImageIcon(this.getClass().getResource("/ic_add.png")));
 		btn_add.setMargin(new Insets(0, 0, 0, 0));
 		btn_add.setBorder(null);
 		btn_add.addActionListener(this);
@@ -275,7 +275,16 @@ public class Frm_Payment extends JFrame implements ActionListener {
 				addService();
 			}
 		} else if (o.equals(btn_delete)) {
-			deleteService();
+			int answer = JOptionPane.showConfirmDialog(null,
+					"Bạn có thực sự muốn xóa dịch vụ?", "Xóa dịch vụ",
+					JOptionPane.YES_NO_OPTION);
+			if (answer == JOptionPane.YES_OPTION) {
+				try {
+					deleteService();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
 		} else if (o.equals(btn_cancel)) {
 			Frm_ManageHotel_Admin frm = new Frm_ManageHotel_Admin(account);
 			frm.setVisible(true);

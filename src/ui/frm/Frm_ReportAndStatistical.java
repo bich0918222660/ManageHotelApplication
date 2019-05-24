@@ -66,7 +66,7 @@ public class Frm_ReportAndStatistical extends JFrame implements ActionListener {
 	private ReportDAO rdao = new ReportDAO();
 
 	public Frm_ReportAndStatistical(Account account) {
-		setTitle("Report and Statistical Category - ^^!");
+		setTitle("Thống kê và báo cáo - ^^!");
 		setLayout(new BorderLayout());
 		setSize(1200, 700);
 		setResizable(false);
@@ -88,25 +88,29 @@ public class Frm_ReportAndStatistical extends JFrame implements ActionListener {
 				BorderFactory.createTitledBorder(null, "", TitledBorder.LEFT, TitledBorder.TOP, fontSan, Color.BLACK));
 
 		// JButton
-		btn_report = new JButton(new ImageIcon("imgs/ic_report_category.png"));
+		btn_report = new JButton(new ImageIcon(this.getClass().getResource("/ic_report_category.png")));
 		btn_report.setMargin(new Insets(0, 0, 0, 0));
 		btn_report.setBorder(null);
 		btn_report.addActionListener(this);
+		btn_report.setBackground(Color.decode("#ebebeb"));
 
-		btn_statistical = new JButton(new ImageIcon("imgs/ic_statistical.png"));
+		btn_statistical = new JButton(new ImageIcon(this.getClass().getResource("/ic_statistical.png")));
 		btn_statistical.setMargin(new Insets(0, 0, 0, 0));
 		btn_statistical.setBorder(null);
 		btn_statistical.addActionListener(this);
+		btn_statistical.setBackground(Color.decode("#ebebeb"));
 
-		btn_manage = new JButton(new ImageIcon("imgs/ic_manage_hotel.png"));
+		btn_manage = new JButton(new ImageIcon(this.getClass().getResource("/ic_manage_hotel.png")));
 		btn_manage.setMargin(new Insets(0, 0, 0, 0));
 		btn_manage.setBorder(null);
 		btn_manage.addActionListener(this);
+		btn_manage.setBackground(Color.decode("#ebebeb"));
 
-		btn_printRevenueReport = new JButton(new ImageIcon("imgs/ic_export.png"));
+		btn_printRevenueReport = new JButton(new ImageIcon(this.getClass().getResource("/ic_export.png")));
 		btn_printRevenueReport.setMargin(new Insets(0, 0, 0, 0));
 		btn_printRevenueReport.setBorder(null);
 		btn_printRevenueReport.addActionListener(this);
+		btn_printRevenueReport.setBackground(Color.decode("#ebebeb"));
 
 		// JLabel
 		lbl_report = new JLabel("Báo cáo tình trạng phòng");
@@ -176,22 +180,25 @@ public class Frm_ReportAndStatistical extends JFrame implements ActionListener {
 		        Document document = new Document(PageSize.A4.rotate(), 20f, 20f, 20f, 20f);
 
 		        try {
-		        	BaseFont baseFont = BaseFont.createFont("font/Lato-Regular.ttf", BaseFont.IDENTITY_H,BaseFont.EMBEDDED);
+		        	BaseFont baseFont = BaseFont.createFont(Frm_ReportAndStatistical.class.getResource("/Lato-Regular.ttf").toString(), BaseFont.IDENTITY_H,BaseFont.EMBEDDED);
 					com.itextpdf.text.Font fontNormal = new com.itextpdf.text.Font(baseFont, 13);
+					com.itextpdf.text.Font fontLogo = new com.itextpdf.text.Font(baseFont, 15);
 		        	
 		        	// khởi tạo một PdfWriter truyền vào document và FileOutputStream
-		            PdfWriter.getInstance(document, new FileOutputStream(chooser.getSelectedFile() + ".pdf"));
-
+		            PdfWriter.getInstance(document, new FileOutputStream(chooser.getSelectedFile() + ".pdf", true));
+					
 		            document.open();
-		            Image imgsup = Image.getInstance("imgs/hotel.png");
-		            document.add(imgsup);
+		            
+		            Paragraph pLogo = new Paragraph("BN HOTEL", fontLogo);
+		            pLogo.setAlignment(Element.ALIGN_LEFT);
 		            
 		            Paragraph pDate = new Paragraph("Ngày báo cáo: " + getToDayFormat(new Date()) + "\n", fontNormal);
 		            pDate.setAlignment(Element.ALIGN_CENTER);
 		            
 		            Paragraph pLine = new Paragraph("-------------------------- o0o --------------------------\n\n");
 		            pLine.setAlignment(Element.ALIGN_CENTER);
-		            
+
+		            document.add(pLogo);
 		            document.add(pDate);
 		            document.add(pLine);
 		            reportByMonth(document);
@@ -201,7 +208,24 @@ public class Frm_ReportAndStatistical extends JFrame implements ActionListener {
 		            reportByCategory(document);
 
 		            document.close();
-		            JOptionPane.showMessageDialog(null, "Đã lưu thành công!");
+		            
+		            int answer = JOptionPane.showConfirmDialog(null,
+							"Bạn có muốn xem ngay báo cáo doanh thu không?", "Hiển thị báo cáo doanh thu",
+							JOptionPane.YES_NO_OPTION);
+					if (answer == JOptionPane.YES_OPTION) {
+						if ((new File(chooser.getSelectedFile() + ".pdf")).exists()) {
+
+							Process p = Runtime
+							   .getRuntime()
+							   .exec("rundll32 url.dll,FileProtocolHandler " + chooser.getSelectedFile() + ".pdf");
+							p.waitFor();
+								
+						} else {
+
+							System.out.println("File is not exists");
+
+						}
+					}
 
 		        } catch (DocumentException ex) {
 		            ex.printStackTrace();
@@ -210,6 +234,8 @@ public class Frm_ReportAndStatistical extends JFrame implements ActionListener {
 		        } catch (MalformedURLException e1) {
 					e1.printStackTrace();
 				} catch (IOException e1) {
+					e1.printStackTrace();
+				} catch (InterruptedException e1) {
 					e1.printStackTrace();
 				}
 			}
@@ -224,7 +250,7 @@ public class Frm_ReportAndStatistical extends JFrame implements ActionListener {
 			float[] columnWidths = new float[]{5f, 20f, 15f, 10f, 10f, 10f};
             table.setWidths(columnWidths);
 			
-			BaseFont baseFont = BaseFont.createFont("font/Lato-Regular.ttf", BaseFont.IDENTITY_H,BaseFont.EMBEDDED);
+			BaseFont baseFont = BaseFont.createFont(Frm_ReportAndStatistical.class.getResource("/Lato-Regular.ttf").toString(), BaseFont.IDENTITY_H,BaseFont.EMBEDDED);
 			com.itextpdf.text.Font fontHeader = new com.itextpdf.text.Font(baseFont, 15, Font.BOLD);
 			com.itextpdf.text.Font fontHeaderTable = new com.itextpdf.text.Font(baseFont, 13, Font.BOLD);
 			com.itextpdf.text.Font fontBody = new com.itextpdf.text.Font(baseFont, 13);
@@ -268,7 +294,7 @@ public class Frm_ReportAndStatistical extends JFrame implements ActionListener {
 			float[] columnWidths = new float[]{5f, 20f, 5f, 20f, 5f, 20f, 5f, 12f, 12f, 12f, 12f};
             table.setWidths(columnWidths);
 			
-			BaseFont baseFont = BaseFont.createFont("font/Lato-Regular.ttf", BaseFont.IDENTITY_H,BaseFont.EMBEDDED);
+			BaseFont baseFont = BaseFont.createFont(Frm_ReportAndStatistical.class.getResource("/Lato-Regular.ttf").toString(), BaseFont.IDENTITY_H,BaseFont.EMBEDDED);
 			com.itextpdf.text.Font fontHeader = new com.itextpdf.text.Font(baseFont, 14, Font.BOLD);
 			com.itextpdf.text.Font fontHeaderTable = new com.itextpdf.text.Font(baseFont, 12, Font.BOLD);
 			com.itextpdf.text.Font fontBody = new com.itextpdf.text.Font(baseFont, 12);
@@ -331,7 +357,7 @@ public class Frm_ReportAndStatistical extends JFrame implements ActionListener {
 			float[] columnWidths = new float[]{5f, 20f, 5f, 20f, 5f, 20f, 5f, 12f, 12f, 12f, 12f};
             table.setWidths(columnWidths);
 			
-			BaseFont baseFont = BaseFont.createFont("font/Lato-Regular.ttf", BaseFont.IDENTITY_H,BaseFont.EMBEDDED);
+			BaseFont baseFont = BaseFont.createFont(Frm_ReportAndStatistical.class.getResource("/Lato-Regular.ttf").toString(), BaseFont.IDENTITY_H,BaseFont.EMBEDDED);
 			com.itextpdf.text.Font fontHeader = new com.itextpdf.text.Font(baseFont, 14, Font.BOLD);
 			com.itextpdf.text.Font fontHeaderTable = new com.itextpdf.text.Font(baseFont, 12, Font.BOLD);
 			com.itextpdf.text.Font fontBody = new com.itextpdf.text.Font(baseFont, 12);

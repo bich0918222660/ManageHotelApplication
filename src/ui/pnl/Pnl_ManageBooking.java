@@ -26,6 +26,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 import dao.BookingDAO;
 import dao.BookingDetailDAO;
@@ -151,7 +152,7 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 		// Jpanel
 		pnl_header = new JPanel(new BorderLayout());
 		JLabel lbl = new JLabel();
-		lbl.setIcon(new ImageIcon("imgs/rose.jpeg"));
+		lbl.setIcon(new ImageIcon(this.getClass().getResource("/rose.jpeg")));
 		pnl_header.add(lbl);
 
 		pnl_body = new JPanel(new BorderLayout());
@@ -184,35 +185,41 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 		txt_quantity_category.setEditable(false);
 
 		// JButton
-		btn_delete = new JButton(new ImageIcon("imgs/ic_delete.png"));
+		btn_delete = new JButton(new ImageIcon(this.getClass().getResource("/ic_delete.png")));
 		btn_delete.setMargin(new Insets(0, 0, 0, 0));
 		btn_delete.setBorder(null);
 		btn_delete.addActionListener(this);
+		btn_delete.setBackground(Color.decode("#ebebeb"));
 
-		btn_checkin = new JButton(new ImageIcon("imgs/ic_checkin.png"));
+		btn_checkin = new JButton(new ImageIcon(this.getClass().getResource("/ic_checkin.png")));
 		btn_checkin.setMargin(new Insets(0, 0, 0, 0));
 		btn_checkin.setBorder(null);
 		btn_checkin.addActionListener(this);
+		btn_checkin.setBackground(Color.decode("#ebebeb"));
 
-		btn_pay = new JButton(new ImageIcon("imgs/ic_pay.png"));
+		btn_pay = new JButton(new ImageIcon(this.getClass().getResource("/ic_pay.png")));
 		btn_pay.setMargin(new Insets(0, 0, 0, 0));
 		btn_pay.setBorder(null);
 		btn_pay.addActionListener(this);
+		btn_pay.setBackground(Color.decode("#ebebeb"));
 		
-		btn_load = new JButton(new ImageIcon("imgs/ic_load.png"));
+		btn_load = new JButton(new ImageIcon(this.getClass().getResource("/ic_load.png")));
 		btn_load.setMargin(new Insets(0, 0, 0, 0));
 		btn_load.setBorder(null);
 		btn_load.addActionListener(this);
+		btn_load.setBackground(Color.decode("#ebebeb"));
 		
-		btn__person_code = new JButton(new ImageIcon("imgs/ic_check.png"));
+		btn__person_code = new JButton(new ImageIcon(this.getClass().getResource("/ic_check.png")));
 		btn__person_code.setMargin(new Insets(0, 0, 0, 0));
 		btn__person_code.setBorder(null);
 		btn__person_code.addActionListener(this);
+		btn__person_code.setBackground(Color.decode("#ebebeb"));
 
-		btn_list_today = new JButton(new ImageIcon("imgs/ic_list.png"));
+		btn_list_today = new JButton(new ImageIcon(this.getClass().getResource("/ic_list.png")));
 		btn_list_today.setMargin(new Insets(0, 0, 0, 0));
 		btn_list_today.setBorder(null);
 		btn_list_today.addActionListener(this);
+		btn_list_today.setBackground(Color.decode("#ebebeb"));
 
 		// JTable
 		String[] header_booking = { 
@@ -251,10 +258,15 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 				}
 			}
 		};
-		tbl_booking.setRowHeight(25);
+		tbl_booking.setRowHeight(35);
 		dtbl_cell_render = new DefaultTableCellRenderer();
 		dtbl_cell_render.setHorizontalAlignment(SwingConstants.CENTER);
 		tbl_booking.setDefaultRenderer(String.class, dtbl_cell_render);
+		
+		JTableHeader tableHeader = tbl_booking.getTableHeader();
+		tableHeader.setBackground(Color.decode("#67e0fe"));
+		tableHeader.setFont(new Font("Arial", Font.BOLD, 13));
+		tableHeader.setPreferredSize(new Dimension(tableHeader.getPreferredSize().width, 35));
 
 		String[] header_detail = { 
 				"#", "Ngày nhận phòng", 
@@ -289,10 +301,15 @@ public class Pnl_ManageBooking extends JPanel implements ActionListener {
 				}
 			}
 		};
-		tbl_detail.setRowHeight(25);
+		tbl_detail.setRowHeight(35);
 		dtbl_cell_render = new DefaultTableCellRenderer();
 		dtbl_cell_render.setHorizontalAlignment(SwingConstants.CENTER);
 		tbl_detail.setDefaultRenderer(String.class, dtbl_cell_render);
+		
+		JTableHeader tableHeaderDetail = tbl_detail.getTableHeader();
+		tableHeaderDetail.setBackground(Color.decode("#67e0fe"));
+		tableHeaderDetail.setFont(new Font("Arial", Font.BOLD, 13));
+		tableHeaderDetail.setPreferredSize(new Dimension(tableHeaderDetail.getPreferredSize().width, 35));
 
 		// JScrollPane
 		jsp_booking = new JScrollPane(tbl_booking);

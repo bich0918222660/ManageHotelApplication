@@ -3,11 +3,13 @@ package ui.pnl.component;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Insets;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -92,9 +94,10 @@ public class Pnl_CreateCustomer extends JPanel {
 		bg.add(rb_male);
 		
 		// JButton
-		btn_add = new JButton("Thêm mới");
-		btn_add.setEnabled(false);
-		
+		btn_add = new JButton(new ImageIcon(this.getClass().getResource("/ic_add.png")));
+		btn_add.setMargin(new Insets(0, 0, 0, 0));
+		btn_add.setBorder(null);
+		btn_add.setBackground(Color.decode("#ebebeb"));
 	}
 	
 	private void gui() {
@@ -111,7 +114,10 @@ public class Pnl_CreateCustomer extends JPanel {
 		Box b1 = BoxComponent.getHorizontalBox_NoPadding(b_firstName, b_middleName, b_lastName, 30);
 		Box b2 = BoxComponent.getHorizontalBox_NoPadding(b_birthDate, b_gender, b_person_code, 30);
 		Box b3 = BoxComponent.getHorizontalBox_NoPadding(b_phone, b_email, 30);
-		Box b5 = BoxComponent.getHorizontalBox(btn_add, 10);
+		Box b5 = Box.createHorizontalBox();
+		b5.add(Box.createHorizontalStrut(1150));
+		b5.add(btn_add);
+		b5.add(Box.createHorizontalStrut(10));
 		
 		Box bv = Box.createVerticalBox();
 		bv.add(Box.createVerticalStrut(10));

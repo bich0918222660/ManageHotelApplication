@@ -1,5 +1,6 @@
 package ui.frm;
 
+import java.applet.Applet;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -49,7 +50,7 @@ public class Frm_ManageHotel_Admin extends JFrame implements ActionListener {
 	private Account account;
 	
 	public Frm_ManageHotel_Admin(Account account) {
-		setTitle("Manage Hotel Application - ^^!");
+		setTitle("Khách sạn BN - ^^!");
 		setSize(1400, 1000);
 		setResizable(false);
 		setLocationRelativeTo(null); // canh giua
@@ -67,61 +68,72 @@ public class Frm_ManageHotel_Admin extends JFrame implements ActionListener {
 		pnlBody = new JPanel(new BorderLayout());
 		pnlBody.setBorder(BorderFactory.createTitledBorder(null, "", TitledBorder.LEFT, TitledBorder.TOP, fontSan, Color.BLACK));
 		
-		// JButton
-		btnBooking = new JButton(new ImageIcon("imgs/ic_booking.png"));
+		// JButton 
+//		btnBooking = new JButton(new ImageIcon("imgs/ic_booking.png"));
+		btnBooking = new JButton(new ImageIcon(this.getClass().getResource("/ic_booking.png")));
 		btnBooking.setMargin(new Insets(0, 0, 0, 0));
 		btnBooking.setBorder(null);
 		btnBooking.addActionListener(this);
+		btnBooking.setBackground(Color.decode("#ebebeb"));
 		
-		btnManageBooking = new JButton(new ImageIcon("imgs/ic_manage_booking.png"));
+		btnManageBooking = new JButton(new ImageIcon(this.getClass().getResource("/ic_manage_booking.png")));
 		btnManageBooking.setMargin(new Insets(0, 0, 0, 0));
 		btnManageBooking.setBorder(null);
 		btnManageBooking.addActionListener(this);
+		btnManageBooking.setBackground(Color.decode("#ebebeb"));
 		
-		btnManagePayment = new JButton(new ImageIcon("imgs/ic_manage_payment.png"));
+		btnManagePayment = new JButton(new ImageIcon(this.getClass().getResource("/ic_manage_payment.png")));
 		btnManagePayment.setMargin(new Insets(0, 0, 0, 0));
 		btnManagePayment.setBorder(null);
 		btnManagePayment.addActionListener(this);
+		btnManagePayment.setBackground(Color.decode("#ebebeb"));
 		
-		btnManageCategory = new JButton(new ImageIcon("imgs/ic_manage_category.png"));
+		btnManageCategory = new JButton(new ImageIcon(this.getClass().getResource("/ic_manage_category.png")));
 		btnManageCategory.setMargin(new Insets(0, 0, 0, 0));
 		btnManageCategory.setBorder(null);
 		btnManageCategory.addActionListener(this);
+		btnManageCategory.setBackground(Color.decode("#ebebeb"));
 		
-		btnManageRoom = new JButton(new ImageIcon("imgs/ic_manage_room.png"));
+		btnManageRoom = new JButton(new ImageIcon(this.getClass().getResource("/ic_manage_room.png")));
 		btnManageRoom.setMargin(new Insets(0, 0, 0, 0));
 		btnManageRoom.setBorder(null);
 		btnManageRoom.addActionListener(this);
+		btnManageRoom.setBackground(Color.decode("#ebebeb"));
 		
-		btnReport = new JButton(new ImageIcon("imgs/ic_report.png"));
+		btnReport = new JButton(new ImageIcon(this.getClass().getResource("/ic_report.png")));
 		btnReport.setMargin(new Insets(0, 0, 0, 0));
 		btnReport.setBorder(null);
 		btnReport.addActionListener(this);
+		btnReport.setBackground(Color.decode("#ebebeb"));
 
-		btnManageCustomer = new JButton(new ImageIcon("imgs/ic_manage_customer.png"));
+		btnManageCustomer = new JButton(new ImageIcon(this.getClass().getResource("/ic_manage_customer.png")));
 		btnManageCustomer.setMargin(new Insets(0, 0, 0, 0));
 		btnManageCustomer.setBorder(null);
 		btnManageCustomer.addActionListener(this);
+		btnManageCustomer.setBackground(Color.decode("#ebebeb"));
 
-		btnManageEmployee = new JButton(new ImageIcon("imgs/ic_manage_employee.png"));
+		btnManageEmployee = new JButton(new ImageIcon(this.getClass().getResource("/ic_manage_employee.png")));
 		btnManageEmployee.setMargin(new Insets(0, 0, 0, 0));
 		btnManageEmployee.setBorder(null);
 		btnManageEmployee.addActionListener(this);
+		btnManageEmployee.setBackground(Color.decode("#ebebeb"));
 		
-		btnManageAccount = new JButton(new ImageIcon("imgs/ic_manage_account.png"));
+		btnManageAccount = new JButton(new ImageIcon(this.getClass().getResource("/ic_manage_account.png")));
 		btnManageAccount.setMargin(new Insets(0, 0, 0, 0));
 		btnManageAccount.setBorder(null);
 		btnManageAccount.addActionListener(this);
+		btnManageAccount.setBackground(Color.decode("#ebebeb"));
 
-		btnLogout = new JButton(new ImageIcon("imgs/ic_logout.png"));
+		btnLogout = new JButton(new ImageIcon(this.getClass().getResource("/ic_logout.png")));
 		btnLogout.setMargin(new Insets(0, 0, 0, 0));
 		btnLogout.setBorder(null);
 		btnLogout.addActionListener(this);
+		btnLogout.setBackground(Color.decode("#ebebeb"));
 		
 		// JLabel
 		lblBooking = new JLabel("Đặt phòng");
 		lblManageBooking = new JLabel("Quản lý đơn đặt");
-		lblManagePayment = new JLabel("Quản lý đơn thanh toán");
+		lblManagePayment = new JLabel("Danh sách hóa đơn");
 		lblManageCategory = new JLabel("Quản lý loại phòng");
 		lblManageRoom = new JLabel("Quản lý phòng");
 		lblReport = new JLabel("Thống kê - Báo cáo");
@@ -178,9 +190,15 @@ public class Frm_ManageHotel_Admin extends JFrame implements ActionListener {
 		
 		pnlMenu.add(bv);
 		this.add(pnlMenu, BorderLayout.WEST);
+		
 		Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageBooking(this, account), 5), 5);
 		pnlBody.add(b);
-		this.add(pnlBody);
+		
+		Box bx = Box.createVerticalBox();
+		bx.add(Box.createVerticalStrut(8));
+		bx.add(BoxComponent.getHorizontalBox(pnlBody, 2));
+		bx.add(Box.createVerticalStrut(2));
+		this.add(bx);
 	}
 	
 	@Override
@@ -199,26 +217,16 @@ public class Frm_ManageHotel_Admin extends JFrame implements ActionListener {
 			revalidate();
 		}
 		else if(o.equals(btnManageCategory)) {
-			if(account.getRole().equals("Super Admin")) {
-				pnlBody.removeAll();
-				Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageCategory(account), 20), 20);
-				pnlBody.add(b);
-				revalidate();
-			}
-			else {
-				JOptionPane.showMessageDialog(null, "Bạn chưa được cấp quyền!");
-			}
+			pnlBody.removeAll();
+			Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageCategory(account), 20), 20);
+			pnlBody.add(b);
+			revalidate();
 		}
 		else if(o.equals(btnManageRoom)) {
-			if(account.getRole().equals("Super Admin")) {
-				pnlBody.removeAll();
-				Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageRoom(account), 20), 20);
-				pnlBody.add(b);
-				revalidate();
-			}
-			else {
-				JOptionPane.showMessageDialog(null, "Bạn chưa được cấp quyền!");
-			}
+			pnlBody.removeAll();
+			Box b = BoxComponent.getHorizontalBox(BoxComponent.getVerticalBox(new Pnl_ManageRoom(account), 20), 20);
+			pnlBody.add(b);
+			revalidate();
 		}
 		else if(o.equals(btnManageCustomer)) {
 			pnlBody.removeAll();

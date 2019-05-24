@@ -58,7 +58,7 @@ public class CustomerDAO extends DAOAbstract<Customer> {
 		String sql = "update Customers set FirstName = ?, MiddleName = ?, "
 				+ "LastName = ?, Gender = ?, DateOfBirth = ?, "
 				+ "Phone = ?, Address = ?, Email = ?, "
-				+ "PersonCode = ? where CustomerID = ?";
+				+ "PersonCode = ?, AccountID = ? where CustomerID = ?";
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setString(1, t.getFirstName());
 		ps.setString(2, t.getMiddleName());
@@ -69,7 +69,8 @@ public class CustomerDAO extends DAOAbstract<Customer> {
 		ps.setString(7, t.getAddress());
 		ps.setString(8, t.getEmail());
 		ps.setString(9, t.getPersonCode());
-		ps.setInt(10, t.getCustomerID());
+		ps.setString(10, t.getAccountID());
+		ps.setInt(11, t.getCustomerID());
 		return ps.executeUpdate() > 0;
 	}
 	

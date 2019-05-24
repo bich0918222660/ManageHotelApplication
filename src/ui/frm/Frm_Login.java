@@ -1,11 +1,13 @@
 package ui.frm;
 
+import java.applet.Applet;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -26,6 +28,7 @@ import javax.swing.JTextField;
 import dao.AccountDAO;
 import entity.Account;
 import ui.component.BoxComponent;
+import ui.component.ButtonComponent;
 
 public class Frm_Login extends JFrame implements ActionListener {
 
@@ -38,7 +41,7 @@ public class Frm_Login extends JFrame implements ActionListener {
 	private Font fontSan = new Font("Arial", Font.BOLD, 14);
 	
 	public Frm_Login() {
-		setTitle("Login - ^^!");
+		setTitle("Đăng nhập - ^^!");
 		setSize(800, 800);
 		setResizable(false);
 		setLocationRelativeTo(null); // canh giua
@@ -61,14 +64,20 @@ public class Frm_Login extends JFrame implements ActionListener {
 			String username = txtUsername.getText().trim();
 			String password = txtPassword.getText().trim();
 			
-			Account acc = existInList(username, password);
-			if(acc != null) {
-				Frm_ManageHotel_Admin frm = new Frm_ManageHotel_Admin(acc);
-				frm.setVisible(true);
-				this.dispose();
-			}
-			else {
-				JOptionPane.showMessageDialog(null, "Mật khẩu không hợp lệ!");
+			if(username.equals("")) {
+				JOptionPane.showMessageDialog(null, "Tài khoản không được để trống!");
+			} else if(password.equals("")) {
+				JOptionPane.showMessageDialog(null, "Mật khẩu không được để trống!");
+			} else {
+				Account acc = existInList(username, password);
+				if(acc != null) {
+					Frm_ManageHotel_Admin frm = new Frm_ManageHotel_Admin(acc);
+					frm.setVisible(true);
+					this.dispose();
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "Mật khẩu không hợp lệ!");
+				}
 			}
 		}
 	}
@@ -100,7 +109,7 @@ public class Frm_Login extends JFrame implements ActionListener {
 	        setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
 	        try
 	        {
-	            image = ImageIO.read(new File("imgs/bg.jpeg"));
+	        	image = ImageIO.read(Applet.class.getResourceAsStream("/bg.jpeg"));
 	        }
 	        catch(Exception e)
 	        {
@@ -112,7 +121,7 @@ public class Frm_Login extends JFrame implements ActionListener {
 
 		private void init() {
 			// Jlabel
-			lblTitle = new JLabel(new ImageIcon("imgs/ic_user.png"));
+			lblTitle = new JLabel(new ImageIcon(this.getClass().getResource("/ic_user.png")));
 
 			lblUsername = new JLabel("USERNAME :");
 			lblUsername.setForeground(Color.white);
@@ -130,8 +139,7 @@ public class Frm_Login extends JFrame implements ActionListener {
 			txtPassword.setFont(fontSan);
 
 			// Jbutton
-			btnLogin = new JButton("LOGIN");
-			btnLogin.setFont(fontSan);
+			btnLogin = new ButtonComponent("ĐĂNG NHẬP", "#000000", fontSan, "#ffffff", new Insets(4, 22, 4, 22));
 			
 		}
 

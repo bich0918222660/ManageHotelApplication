@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
@@ -19,6 +20,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 import com.toedter.calendar.JDateChooser;
 
@@ -31,6 +33,7 @@ import entity.Category;
 import entity.Customer;
 import entity.Room;
 import ui.component.BoxComponent;
+import ui.component.ButtonComponent;
 
 public class Pnl_ReportStatusCategory extends JPanel implements ActionListener {
 
@@ -95,7 +98,7 @@ public class Pnl_ReportStatusCategory extends JPanel implements ActionListener {
 		getListCategory();
 		
 		// JButton 
-		btn_report = new JButton("Báo cáo tình trạng");
+		btn_report = new ButtonComponent("Báo cáo tình trạng", "#000000", new Font("Arial", Font.BOLD, 13), "#67e0fe", new Insets(4, 20, 4, 20));
 		btn_report.addActionListener(this);
 		
 		// JTable
@@ -104,7 +107,12 @@ public class Pnl_ReportStatusCategory extends JPanel implements ActionListener {
 				"Tình trạng"
 		};
 		tbl_empty = new JTable(tbl_model_empty = new DefaultTableModel(header_empty, 0));
-		tbl_empty.setRowHeight(25);
+		tbl_empty.setRowHeight(35);
+		
+		JTableHeader tableHeaderEmpty = tbl_empty.getTableHeader();
+		tableHeaderEmpty.setBackground(Color.decode("#67e0fe"));
+		tableHeaderEmpty.setFont(new Font("Arial", Font.BOLD, 13));
+		tableHeaderEmpty.setPreferredSize(new Dimension(tableHeaderEmpty.getPreferredSize().width, 35));
 		
 		String[] header_booking = {
 				"Mã phòng", 
@@ -114,7 +122,12 @@ public class Pnl_ReportStatusCategory extends JPanel implements ActionListener {
 				"Khách hàng"
 		};
 		tbl_booked = new JTable(tbl_model_booked = new DefaultTableModel(header_booking, 0));
-		tbl_booked.setRowHeight(25);
+		tbl_booked.setRowHeight(35);
+		
+		JTableHeader tableHeaderBooked = tbl_booked.getTableHeader();
+		tableHeaderBooked.setBackground(Color.decode("#67e0fe"));
+		tableHeaderBooked.setFont(new Font("Arial", Font.BOLD, 13));
+		tableHeaderBooked.setPreferredSize(new Dimension(tableHeaderBooked.getPreferredSize().width, 35));
 		
 		String[] header_rented = {
 				"Mã phòng", 
@@ -124,7 +137,12 @@ public class Pnl_ReportStatusCategory extends JPanel implements ActionListener {
 				"Khách hàng"
 		};
 		tbl_rented = new JTable(tbl_model_rented = new DefaultTableModel(header_rented, 0));
-		tbl_rented.setRowHeight(25);
+		tbl_rented.setRowHeight(35);
+		
+		JTableHeader tableHeaderRented = tbl_rented.getTableHeader();
+		tableHeaderRented.setBackground(Color.decode("#67e0fe"));
+		tableHeaderRented.setFont(new Font("Arial", Font.BOLD, 13));
+		tableHeaderRented.setPreferredSize(new Dimension(tableHeaderRented.getPreferredSize().width, 35));
 		
 		// JScrollPane
 		jsp_empty = new JScrollPane(tbl_empty);

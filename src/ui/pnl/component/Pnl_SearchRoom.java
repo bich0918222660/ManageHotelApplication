@@ -20,11 +20,13 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 import com.toedter.calendar.JDateChooser;
 
 import entity.Category;
 import ui.component.BoxComponent;
+import ui.component.ButtonComponent;
 
 public class Pnl_SearchRoom extends JPanel {
 
@@ -57,14 +59,14 @@ public class Pnl_SearchRoom extends JPanel {
 		// Jpanel
 		pnl_empty_rooms = new JPanel(new BorderLayout());
 		pnl_empty_rooms.setBorder(BorderFactory.createTitledBorder(null, "Danh sách phòng trống:", TitledBorder.LEFT, TitledBorder.TOP, fontSan, Color.MAGENTA));
-		pnl_empty_rooms.setPreferredSize(new Dimension(500, 300));
+		pnl_empty_rooms.setPreferredSize(new Dimension(560, 300));
 		
 		pnl_rooms = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		pnl_rooms.setPreferredSize(new Dimension(450, 300));
+		pnl_rooms.setPreferredSize(new Dimension(400, 200));
 		
 		pnl_selected_rooms = new JPanel(new BorderLayout());
 		pnl_selected_rooms.setBorder(BorderFactory.createTitledBorder(null, "Danh sách phòng được chọn:", TitledBorder.LEFT, TitledBorder.TOP, fontSan, Color.MAGENTA));
-		pnl_selected_rooms.setPreferredSize(new Dimension(700, 300));
+		pnl_selected_rooms.setPreferredSize(new Dimension(640, 300));
 		
 		// JLabel
 		lbl_category = new JLabel("Loại phòng:");
@@ -83,15 +85,17 @@ public class Pnl_SearchRoom extends JPanel {
 		cbx_categories.setPreferredSize(new Dimension(270, cbx_categories.getPreferredSize().height));
 		
 		// JButton
-		btn_search = new JButton("Tìm kiếm");
+		btn_search = new ButtonComponent("Tìm kiếm", "#000000", new Font("Arial", Font.BOLD, 13), "#67e0fe", new Insets(4, 15, 4, 15));
 		
-		btn_delete = new JButton(new ImageIcon("imgs/ic_delete.png"));
+		btn_delete = new JButton(new ImageIcon(this.getClass().getResource("/ic_delete.png")));
 		btn_delete.setMargin(new Insets(0, 0, 0, 0));
 		btn_delete.setBorder(null);
+		btn_delete.setBackground(Color.decode("#ebebeb"));
 
-		btn_add = new JButton(new ImageIcon("imgs/ic_addcart.png"));
+		btn_add = new JButton(new ImageIcon(this.getClass().getResource("/ic_addcart.png")));
 		btn_add.setMargin(new Insets(0, 0, 0, 0));
 		btn_add.setBorder(null);
+		btn_add.setBackground(Color.decode("#ebebeb"));
 		
 		// JList
 		String[] header = {
@@ -128,8 +132,14 @@ public class Pnl_SearchRoom extends JPanel {
 		};
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JTableHeader tableHeader = tbl_selected_rooms.getTableHeader();
+		tableHeader.setBackground(Color.decode("#67e0fe"));
+		tableHeader.setFont(new Font("Arial", Font.BOLD, 13));
+		tableHeader.setPreferredSize(new Dimension(tableHeader.getPreferredSize().width, 35));
+		
 		tbl_selected_rooms.setDefaultRenderer(String.class, centerRenderer);
-		tbl_selected_rooms.setRowHeight(30);
+		tbl_selected_rooms.setRowHeight(35);
 		jsp_rooms = new JScrollPane(tbl_selected_rooms);
 	}
 
@@ -148,7 +158,7 @@ public class Pnl_SearchRoom extends JPanel {
 		
 			// RIGHT
 		Box b_button = Box.createHorizontalBox();
-		b_button.add(Box.createHorizontalStrut(590));
+		b_button.add(Box.createHorizontalStrut(530));
 		b_button.add(btn_delete);
 		b_button.add(Box.createHorizontalStrut(10));
 		b_button.add(btn_add);

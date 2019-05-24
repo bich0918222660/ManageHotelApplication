@@ -2,9 +2,11 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="E:/MonHoc/MonHoc/LibraryJava/jar_files/jcalendar-1.2.2.jar"/>
-	<classpathentry kind="lib" path="E:/MonHoc/MonHoc/LibraryJava/sqljdbc42.jar"/>
-	<classpathentry kind="lib" path="E:/MonHoc/Library/jfreechart-1.0.19/jfreechart-1.0.19-demo.jar"/>
-	<classpathentry kind="lib" path="E:/MonHoc/Library/itextpdf-5.4.0.jar"/>
+	<classpathentry excluding="rooms/" kind="src" path="imgs"/>
+	<classpathentry kind="src" path="font"/>
+	<classpathentry exported="true" kind="lib" path="E:/MonHoc/MonHoc/LibraryJava/jar_files/jcalendar-1.2.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="E:/MonHoc/MonHoc/LibraryJava/sqljdbc42.jar"/>
+	<classpathentry exported="true" kind="lib" path="E:/MonHoc/Library/jfreechart-1.0.19/jfreechart-1.0.19-demo.jar"/>
+	<classpathentry exported="true" kind="lib" path="E:/MonHoc/Library/itextpdf-5.4.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

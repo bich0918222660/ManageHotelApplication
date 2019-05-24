@@ -26,6 +26,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 import com.toedter.calendar.JDateChooser;
 
@@ -96,6 +97,9 @@ public class Pnl_ManageCustomer extends JPanel implements ActionListener {
 				if(c.getAccountID() != null) {
 					txt_account.setText(c.getAccountID() + "");
 				}
+				else {
+					txt_account.setText("");
+				}
 			}
 			
 		});
@@ -157,7 +161,7 @@ public class Pnl_ManageCustomer extends JPanel implements ActionListener {
 		// Jpanel
 		pnl_header = new JPanel(new BorderLayout());
 		JLabel lbl = new JLabel();
-		lbl.setIcon(new ImageIcon("imgs/rose.jpeg"));
+		lbl.setIcon(new ImageIcon(this.getClass().getResource("/rose.jpeg")));
 		pnl_header.add(lbl);
 		
 		pnl_body = new JPanel(new BorderLayout());
@@ -214,34 +218,45 @@ public class Pnl_ManageCustomer extends JPanel implements ActionListener {
 		bg.add(rb_male);
 
 		// JButton
-		btn_add = new JButton(new ImageIcon("imgs/ic_add.png"));
+		btn_add = new JButton(new ImageIcon(this.getClass().getResource("/ic_add.png")));
 		btn_add.setMargin(new Insets(0, 0, 0, 0));
 		btn_add.setBorder(null);
 		btn_add.addActionListener(this);
+		btn_add.setBackground(Color.decode("#ebebeb"));
 
-		btn_update = new JButton(new ImageIcon("imgs/ic_edit.png"));
+		btn_update = new JButton(new ImageIcon(this.getClass().getResource("/ic_edit.png")));
 		btn_update.setMargin(new Insets(0, 0, 0, 0));
 		btn_update.setBorder(null);
 		btn_update.addActionListener(this);
+		btn_update.setBackground(Color.decode("#ebebeb"));
 
-		btn_delete = new JButton(new ImageIcon("imgs/ic_delete.png"));
+		btn_delete = new JButton(new ImageIcon(this.getClass().getResource("/ic_delete.png")));
 		btn_delete.setMargin(new Insets(0, 0, 0, 0));
 		btn_delete.setBorder(null);
 		btn_delete.addActionListener(this);
+		btn_delete.setBackground(Color.decode("#ebebeb"));
 
-		btn_load = new JButton(new ImageIcon("imgs/ic_load.png"));
+		btn_load = new JButton(new ImageIcon(this.getClass().getResource("/ic_load.png")));
 		btn_load.setMargin(new Insets(0, 0, 0, 0));
 		btn_load.setBorder(null);
 		btn_load.addActionListener(this);
+		btn_load.setBackground(Color.decode("#ebebeb"));
 
-		btn_save = new JButton(new ImageIcon("imgs/ic_save.png"));
+		btn_save = new JButton(new ImageIcon(this.getClass().getResource("/ic_save.png")));
 		btn_save.setMargin(new Insets(0, 0, 0, 0));
 		btn_save.setBorder(null);
 		btn_save.addActionListener(this);
+		btn_save.setBackground(Color.decode("#ebebeb"));
 
 		// JTable
 		String[] header = { "Mã số", "Họ và tên", "Giới tính", "Ngày sinh", "Số điện thoại", "CMND" };
 		tbl_customer = new JTable(tbl_model_customer = new DefaultTableModel(header, 0));
+		tbl_customer.setRowHeight(35);
+		
+		JTableHeader tableHeader = tbl_customer.getTableHeader();
+		tableHeader.setBackground(Color.decode("#67e0fe"));
+		tableHeader.setFont(new Font("Arial", Font.BOLD, 13));
+		tableHeader.setPreferredSize(new Dimension(tableHeader.getPreferredSize().width, 35));
 
 		// JScrollPane
 		jsp_customer = new JScrollPane(tbl_customer);
@@ -330,7 +345,6 @@ public class Pnl_ManageCustomer extends JPanel implements ActionListener {
 		}
 		else if(o.equals(btn_save)) {
 			try {
-				int customerID = Integer.parseInt(txt_id.getText().trim());
 				String personCode = txt_person_code.getText().trim();
 				String phone = txt_phone.getText().trim();
 				String email = txt_email.getText().trim();
@@ -366,6 +380,7 @@ public class Pnl_ManageCustomer extends JPanel implements ActionListener {
 					}
 				}
 				else {
+					int customerID = Integer.parseInt(txt_id.getText().trim());
 					if(ValidationService.validatePersonCode(personCode) 
 							&& ValidationService.validatePhone(phone) 
 							&& ValidationService.validateEmail(email)) {

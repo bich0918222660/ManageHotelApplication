@@ -24,6 +24,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 import dao.AccountDAO;
 import entity.Account;
@@ -106,7 +107,7 @@ public class Pnl_ManageAccount extends JPanel implements ActionListener {
 		// Jpanel
 		pnl_header = new JPanel(new BorderLayout());
 		JLabel lbl = new JLabel();
-		lbl.setIcon(new ImageIcon("imgs/rose.jpeg"));
+		lbl.setIcon(new ImageIcon(this.getClass().getResource("/rose.jpeg")));
 		pnl_header.add(lbl);
 				
 		// JLabel
@@ -129,34 +130,45 @@ public class Pnl_ManageAccount extends JPanel implements ActionListener {
 		cbx_roles.addItem("Quản lý");
 
 		// JButton
-		btn_add = new JButton(new ImageIcon("imgs/ic_add.png"));
+		btn_add = new JButton(new ImageIcon(this.getClass().getResource("/ic_add.png")));
 		btn_add.setMargin(new Insets(0, 0, 0, 0));
 		btn_add.setBorder(null);
 		btn_add.addActionListener(this);
+		btn_add.setBackground(Color.decode("#ebebeb"));
 
-		btn_update = new JButton(new ImageIcon("imgs/ic_edit.png"));
+		btn_update = new JButton(new ImageIcon(this.getClass().getResource("/ic_edit.png")));
 		btn_update.setMargin(new Insets(0, 0, 0, 0));
 		btn_update.setBorder(null);
 		btn_update.addActionListener(this);
+		btn_update.setBackground(Color.decode("#ebebeb"));
 
-		btn_delete = new JButton(new ImageIcon("imgs/ic_delete.png"));
+		btn_delete = new JButton(new ImageIcon(this.getClass().getResource("/ic_delete.png")));
 		btn_delete.setMargin(new Insets(0, 0, 0, 0));
 		btn_delete.setBorder(null);
 		btn_delete.addActionListener(this);
+		btn_delete.setBackground(Color.decode("#ebebeb"));
 
-		btn_load = new JButton(new ImageIcon("imgs/ic_load.png"));
+		btn_load = new JButton(new ImageIcon(this.getClass().getResource("/ic_load.png")));
 		btn_load.setMargin(new Insets(0, 0, 0, 0));
 		btn_load.setBorder(null);
 		btn_load.addActionListener(this);
+		btn_load.setBackground(Color.decode("#ebebeb"));
 
-		btn_save = new JButton(new ImageIcon("imgs/ic_save.png"));
+		btn_save = new JButton(new ImageIcon(this.getClass().getResource("/ic_save.png")));
 		btn_save.setMargin(new Insets(0, 0, 0, 0));
 		btn_save.setBorder(null);
 		btn_save.addActionListener(this);
+		btn_save.setBackground(Color.decode("#ebebeb"));
 
 		// JTable
 		String[] header = { "Tài khoản", "Mật khẩu", "Vai trò" };
 		tbl_account = new JTable(tbl_model_account = new DefaultTableModel(header, 0));
+		tbl_account.setRowHeight(35);
+		
+		JTableHeader tableHeader = tbl_account.getTableHeader();
+		tableHeader.setBackground(Color.decode("#67e0fe"));
+		tableHeader.setFont(new Font("Arial", Font.BOLD, 13));
+		tableHeader.setPreferredSize(new Dimension(tableHeader.getPreferredSize().width, 35));
 
 		// JScrollPane
 		jsp_account = new JScrollPane(tbl_account);

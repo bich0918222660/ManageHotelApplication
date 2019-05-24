@@ -1,7 +1,6 @@
 eclipse.preferences.version=1
 encoding//src/dao/BookingDAO.java=UTF-8
 encoding//src/dao/RoomDAO.java=UTF-8
-encoding//src/driver/Demo.java=UTF-8
 encoding//src/ui/frm/Frm_Login.java=UTF-8
 encoding//src/ui/frm/Frm_ManageHotel_Admin.java=UTF-8
 encoding//src/ui/frm/Frm_Payment.java=UTF-8
@@ -13,7 +12,6 @@ encoding//src/ui/pnl/Pnl_ManageCustomer.java=UTF-8
 encoding//src/ui/pnl/Pnl_ManageEmployee.java=UTF-8
 encoding//src/ui/pnl/Pnl_ManagePayments.java=UTF-8
 encoding//src/ui/pnl/Pnl_ManageRoom.java=UTF-8
-encoding//src/ui/pnl/Pnl_ManageService.java=UTF-8
 encoding//src/ui/pnl/Pnl_ReportStatusCategory.java=UTF-8
 encoding//src/ui/pnl/Pnl_SearchAndBooking.java=UTF-8
 encoding//src/ui/pnl/Pnl_Statistical.java=UTF-8

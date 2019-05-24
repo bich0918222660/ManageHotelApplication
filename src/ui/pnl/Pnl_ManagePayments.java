@@ -19,6 +19,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 import dao.BookingDAO;
 import dao.BookingDetailDAO;
@@ -192,10 +193,15 @@ public class Pnl_ManagePayments extends JPanel {
 				}
 			}
 		};
-		tbl_booking.setRowHeight(25);
+		tbl_booking.setRowHeight(35);
 		DefaultTableCellRenderer dtbl_cell_render1 = new DefaultTableCellRenderer();
 		dtbl_cell_render1.setHorizontalAlignment(SwingConstants.CENTER);
 		tbl_booking.setDefaultRenderer(String.class, dtbl_cell_render1);
+		
+		JTableHeader tableHeader = tbl_booking.getTableHeader();
+		tableHeader.setBackground(Color.decode("#67e0fe"));
+		tableHeader.setFont(new Font("Arial", Font.BOLD, 13));
+		tableHeader.setPreferredSize(new Dimension(tableHeader.getPreferredSize().width, 35));
 
 		String[] headerDetail = {
 			"#", "Mã hóa đơn", "Dịch vụ", 
@@ -226,10 +232,15 @@ public class Pnl_ManagePayments extends JPanel {
 				}
 			}
 		};
-		tbl_detail.setRowHeight(25);
+		tbl_detail.setRowHeight(35);
 		DefaultTableCellRenderer dtbl_cell_render2 = new DefaultTableCellRenderer();
 		dtbl_cell_render2.setHorizontalAlignment(SwingConstants.CENTER);
 		tbl_detail.setDefaultRenderer(String.class, dtbl_cell_render2);
+		
+		JTableHeader tableHeaderDetail = tbl_detail.getTableHeader();
+		tableHeaderDetail.setBackground(Color.decode("#67e0fe"));
+		tableHeaderDetail.setFont(new Font("Arial", Font.BOLD, 13));
+		tableHeaderDetail.setPreferredSize(new Dimension(tableHeaderDetail.getPreferredSize().width, 35));
 
 		String[] headerPayment = {
 			"#", "Số lượng dịch vụ", "Tổng tiền dịch vụ", 
@@ -260,10 +271,15 @@ public class Pnl_ManagePayments extends JPanel {
 				}
 			}
 		};
-		tbl_payment.setRowHeight(25);
+		tbl_payment.setRowHeight(35);
 		DefaultTableCellRenderer dtbl_cell_render3 = new DefaultTableCellRenderer();
 		dtbl_cell_render3.setHorizontalAlignment(SwingConstants.CENTER);
 		tbl_payment.setDefaultRenderer(String.class, dtbl_cell_render3);
+		
+		JTableHeader tableHeaderPayment = tbl_payment.getTableHeader();
+		tableHeaderPayment.setBackground(Color.decode("#67e0fe"));
+		tableHeaderPayment.setFont(new Font("Arial", Font.BOLD, 13));
+		tableHeaderPayment.setPreferredSize(new Dimension(tableHeaderPayment.getPreferredSize().width, 35));
 
 		// JScrollPane
 		jsp_booking = new JScrollPane(tbl_booking);

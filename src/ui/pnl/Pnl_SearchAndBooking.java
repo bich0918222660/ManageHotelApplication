@@ -1,7 +1,9 @@
 package ui.pnl;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
@@ -36,6 +38,7 @@ import ui.component.BoxComponent;
 import ui.pnl.component.Pnl_Booking;
 import ui.pnl.component.Pnl_CreateCustomer;
 import ui.pnl.component.Pnl_SearchRoom;
+import ui.service.ValidationService;
 
 public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 
@@ -56,15 +59,14 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 	private JButton btn_booking_delete, btn_booking, btn_check;
 	private JTable tbl_reservations;
 	private DefaultTableModel tbl_model_reservations;
-	
+
 	// Create Customer
-	private JTextField txt_first_name, txt_middle_name,
-		txt_last_name, txt_address, txt_person_code,
-		txt_customer_phone, txt_customer_email;
+	private JTextField txt_first_name, txt_middle_name, txt_last_name, txt_address, txt_person_code, txt_customer_phone,
+			txt_customer_email;
 	private JDateChooser dcs_date_of_birth;
 	private JRadioButton rb_male, rb_female;
 	private JButton btn_customer_add;
-	
+
 	// DAO
 	private CategoryDAO cdao;
 	private RoomDAO rdao;
@@ -77,7 +79,7 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 	private List<Room> rooms;
 	private List<Room> emptyRooms;
 	private List<BookingDetail> bookingDetails = new ArrayList<>();
-	
+
 	// ----
 	private Customer customer = null;
 	private Account account;
@@ -97,17 +99,17 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 		bdao = new BookingDAO();
 		bddao = new BookingDetailDAO();
 		cudao = new CustomerDAO();
-		
+
 		// LIST
 		categories = cdao.getAll();
 		rooms = rdao.getAll();
 
 		// Search
 		pnl_search = new Pnl_SearchRoom();
-			// Set
+		// Set
 		dcs_checkin = pnl_search.getDcs_checkin();
 		dcs_checkin.setDate(new Date());
-		
+
 		dcs_checkout = pnl_search.getDcs_checkout();
 		dcs_checkout.setDate(new Date(dcs_checkin.getDate().getTime() + (1000 * 60 * 60 * 24)));
 
@@ -127,7 +129,7 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 
 		// Booking
 		pnl_booking = new Pnl_Booking();
-			// Set
+		// Set
 		txt_keywords = pnl_booking.getTxt_phone();
 		txt_name = pnl_booking.getTxt_name();
 		txt_name.setEditable(false);
@@ -158,7 +160,7 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 		rb_male = pnl_CreateCustomer.getRb_male();
 		btn_customer_add = pnl_CreateCustomer.getBtn_add();
 		btn_customer_add.addActionListener(this);
-		
+
 	}
 
 	private void gui() {
@@ -182,81 +184,96 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 		Date checkoutDate = dcs_checkout.getDate();
 		if (o.equals(btn_search)) {
 			searchRoom(checkinDate, checkoutDate, c);
-		} 
-		else if (o.equals(btn_search_delete)) {
-			deleteItemInEmptyRooms();
+		} else if (o.equals(btn_search_delete)) {
+			if (tbl_selected_rooms.getSelectedRow() >= 0 && tbl_selected_rooms.getRowCount() > 0) {
+				int answer = JOptionPane.showConfirmDialog(null, "Bạn có thực sự muốn xóa phòng này?", "Xóa thông tin",
+						JOptionPane.YES_NO_OPTION);
+				if (answer == JOptionPane.YES_OPTION) {
+					deleteItemInEmptyRooms();
+				}
+			} else if (tbl_selected_rooms.getSelectedRow() < 0 && tbl_selected_rooms.getRowCount() > 0) {
+				JOptionPane.showMessageDialog(null, "Bạn chưa chọn phòng cần xóa!");
+			} else {
+				JOptionPane.showMessageDialog(null, "Danh sách hiện đang trống!");
+			}
 		} else if (o.equals(btn_add)) {
 			addItemToReservations();
 		} else if (o.equals(btn_booking_delete)) {
-			deleteItemInReversations();
-		} 
-		else if(o.equals(btn_booking)) {
+			if (tbl_reservations.getSelectedRow() >= 0 && tbl_reservations.getRowCount() > 0) {
+				int answer = JOptionPane.showConfirmDialog(null, "Bạn có thực sự muốn xóa loại phòng này?",
+						"Xóa thông tin", JOptionPane.YES_NO_OPTION);
+				if (answer == JOptionPane.YES_OPTION) {
+					deleteItemInReversations();
+				}
+			} else if (tbl_reservations.getSelectedRow() < 0 && tbl_reservations.getRowCount() > 0) {
+				JOptionPane.showMessageDialog(null, "Bạn chưa chọn thông tin cần xóa!");
+			} else {
+				JOptionPane.showMessageDialog(null, "Danh sách hiện đang trống!");
+			}
+		} else if (o.equals(btn_booking)) {
 			book();
-		}
-		else if(o.equals(btn_check)) {
+		} else if (o.equals(btn_check)) {
 			checkPhoneOfCustomer();
-		}
-		else if(o.equals(btn_customer_add)) {
+		} else if (o.equals(btn_customer_add)) {
 			createCustomer();
 		}
 	}
 
 	private Customer getCustomer(String keywords) {
 		Customer cust = null;
-		for(Customer c : cudao.getAll()) {
-			if(keywords.equals(c.getPersonCode()) || keywords.equals(c.getPhone())) {
+		for (Customer c : cudao.getAll()) {
+			if (keywords.equals(c.getPersonCode()) || keywords.equals(c.getPhone())) {
 				cust = c;
 			}
 		}
 		return cust;
 	}
-	
+
 	private void book() {
-		if(txt_name.getText().equals("")) {
+		if (txt_name.getText().equals("")) {
 			JOptionPane.showMessageDialog(null, "Làm ơn nhập số điện thoại để tìm ra khách hàng!");
-		}
-		else if(tbl_reservations.getRowCount() == 0)
+		} else if (tbl_reservations.getRowCount() == 0)
 			JOptionPane.showMessageDialog(null, "Danh sách hiện đang trống!");
 		else {
-				int quantityRoom = 0; 
-				int quantityCategory = 0;
-				for (int i = 0; i < tbl_model_reservations.getRowCount(); i++) {
-					int q = Integer.parseInt(tbl_model_reservations.getValueAt(i, 1).toString());
-					quantityCategory++;
-					quantityRoom += q;
-				}
-				
-				if(customer == null) {
-					JOptionPane.showMessageDialog(null, "Bạn chưa nhập khách hàng!");
-				}
-				else {
-					int customerID = customer.getCustomerID();
-					double subTotal = Double.parseDouble(txt_subtotal.getText());
-					String personCode = customer.getPersonCode();
-					Booking booking = new Booking(quantityRoom, quantityCategory, subTotal, personCode, customerID, "Đang được đặt");
-					
-					try {
-						bdao.insert(booking);
-						List<Booking> bookings = bdao.getAll();
-						Booking b = bookings.get(0);
-						System.out.println(b.getBookingID() + " - " + b.getPersonCode());
-						int bookingID = b.getBookingID();
-						
-						for(BookingDetail bd : bookingDetails) {
-							int roomID = bd.getRoomID();
-							rdao.updateStatus(roomID, "Đang được đặt");
-							
-							bd.setBookingID(bookingID);
-							bddao.insert(bd);
-						}
-						
-						tbl_model_reservations.setRowCount(0);
-						tbl_model_selected_rooms.setRowCount(0);
-						JOptionPane.showMessageDialog(null, "Đặt phòng thành công!");
-					} catch (Exception e) {
-						e.printStackTrace();
+			int quantityRoom = 0;
+			int quantityCategory = 0;
+			for (int i = 0; i < tbl_model_reservations.getRowCount(); i++) {
+				int q = Integer.parseInt(tbl_model_reservations.getValueAt(i, 1).toString());
+				quantityCategory++;
+				quantityRoom += q;
+			}
+
+			if (customer == null) {
+				JOptionPane.showMessageDialog(null, "Bạn chưa nhập khách hàng!");
+			} else {
+				int customerID = customer.getCustomerID();
+				double subTotal = Double.parseDouble(txt_subtotal.getText());
+				String personCode = customer.getPersonCode();
+				Booking booking = new Booking(quantityRoom, quantityCategory, subTotal, personCode, customerID,
+						"Đang được đặt");
+
+				try {
+					bdao.insert(booking);
+					List<Booking> bookings = bdao.getAll();
+					Booking b = bookings.get(0);
+					System.out.println(b.getBookingID() + " - " + b.getPersonCode());
+					int bookingID = b.getBookingID();
+
+					for (BookingDetail bd : bookingDetails) {
+						int roomID = bd.getRoomID();
+						rdao.updateStatus(roomID, "Đang được đặt");
+
+						bd.setBookingID(bookingID);
+						bddao.insert(bd);
 					}
+
+					tbl_model_reservations.setRowCount(0);
+					tbl_model_selected_rooms.setRowCount(0);
+					JOptionPane.showMessageDialog(null, "Đặt phòng thành công!");
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
+			}
 		}
 	}
 
@@ -268,16 +285,14 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 	private int daysBetween(Date d1, Date d2) {
 		return (int) ((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
 	}
-	
+
 	private boolean isExistInSelectedRooms(String categoryName, int roomID, String checkinDate, String checkoutDate) {
 		for (int i = 0; i < tbl_selected_rooms.getRowCount(); i++) {
 			int id = Integer.parseInt(tbl_model_selected_rooms.getValueAt(i, 0).toString());
 			String name = tbl_model_selected_rooms.getValueAt(i, 1).toString();
 			String cid = tbl_model_selected_rooms.getValueAt(i, 2).toString();
 			String cod = tbl_model_selected_rooms.getValueAt(i, 3).toString();
-			if (id == roomID && 
-					checkinDate.equals(cid))
-			{
+			if (id == roomID && checkinDate.equals(cid)) {
 				return true;
 			}
 		}
@@ -300,7 +315,7 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 			String name = tbl_model_reservations.getValueAt(i, 0).toString().trim();
 			String checkin = tbl_model_reservations.getValueAt(i, 2).toString().trim();
 			String checkout = tbl_model_reservations.getValueAt(i, 3).toString().trim();
-			
+
 			if (name.equals(category) && checkinDate.equals(checkin) && checkoutDate.equals(checkout)) {
 				num = i;
 				return num;
@@ -308,30 +323,30 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 		}
 		return num;
 	}
-	
+
 	private boolean isExistInReservations(String category, String checkinDate, String checkoutDate) {
 		for (int i = 0; i < tbl_reservations.getRowCount(); i++) {
 			String name = tbl_model_reservations.getValueAt(i, 0).toString().trim();
 			String checkin = tbl_model_reservations.getValueAt(i, 2).toString().trim();
 			String checkout = tbl_model_reservations.getValueAt(i, 3).toString().trim();
-			
+
 			if (name.equals(category) && checkinDate.equals(checkin) && checkoutDate.equals(checkout)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	private int getCategoryID(String categoryName) {
 		int categoryID = 0;
-		for(Category category : categories) {
-			if(category.getCategoryName().equals(categoryName)) {
+		for (Category category : categories) {
+			if (category.getCategoryName().equals(categoryName)) {
 				categoryID = category.getCategoryID();
 			}
 		}
 		return categoryID;
 	}
-	
+
 	private List<Integer> getListRoomID(String categoryName, String checkinDate, String checkoutDate) {
 		List<Integer> list = new ArrayList<>();
 		for (int i = 0; i < tbl_selected_rooms.getRowCount(); i++) {
@@ -339,14 +354,14 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 			String name = tbl_selected_rooms.getValueAt(i, 1).toString().trim();
 			String checkin = tbl_selected_rooms.getValueAt(i, 2).toString().trim();
 			String checkout = tbl_selected_rooms.getValueAt(i, 3).toString().trim();
-			
+
 			if (name.equals(categoryName) && checkinDate.equals(checkin) && checkoutDate.equals(checkout)) {
 				list.add(roomID);
 			}
 		}
 		return list;
 	}
-	
+
 	private void searchRoom(Date checkinDate, Date checkoutDate, Category c) {
 		pnl_empty_rooms.removeAll();
 		this.revalidate();
@@ -355,20 +370,21 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 		int daysBetween = daysBetween(checkinDate, checkoutDate);
 		if (daysBetween > 0) {
 			for (Room i : emptyRooms) {
-				JButton btn = new JButton(i.getRoomID() + "");
-				btn.setPreferredSize(new Dimension(90, 45));
+				JButton btn = new JButton(i.getRoomID() + " - " + i.getPosition());
+				btn.setBackground(Color.decode("#67e0fe"));
+				btn.setPreferredSize(new Dimension(150, 45));
 				btn.addActionListener(new ActionListener() {
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						int id = Integer.parseInt(btn.getText());
+						String btnStr = btn.getText();
+						String[] arr = btnStr.split("\\s");
+						int id = Integer.parseInt(arr[0]);
 						if (tbl_selected_rooms.getRowCount() != 0) {
-							if(!isExistInSelectedRooms(c.getCategoryName(), id, 
-									getDateFormat(dcs_checkin.getDate()), 
+							if (!isExistInSelectedRooms(c.getCategoryName(), id, getDateFormat(dcs_checkin.getDate()),
 									getDateFormat(dcs_checkout.getDate()))) {
 								Object[] row = { id + "", c.toString(), getDateFormat(dcs_checkin.getDate()),
-										getDateFormat(dcs_checkout.getDate()), 
-										c.getPrice(), c.getDiscount() };
+										getDateFormat(dcs_checkout.getDate()), c.getPrice(), c.getDiscount() };
 								tbl_model_selected_rooms.addRow(row);
 							} else {
 								JOptionPane.showMessageDialog(null, "Phòng " + id + " đã có trong danh sách!");
@@ -386,7 +402,7 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 		} else
 			JOptionPane.showMessageDialog(null, "Ngày trả phòng phải sau ngày nhận phòng ít nhất một ngày!");
 	}
-	
+
 	private void deleteItemInEmptyRooms() {
 		int[] selectedRow = tbl_selected_rooms.getSelectedRows();
 		if (tbl_model_selected_rooms.getRowCount() != 0) {
@@ -402,13 +418,12 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 			JOptionPane.showMessageDialog(null, "Danh sách hiện đang trống!");
 		}
 	}
-	
+
 	private void addItemToReservations() {
 		bookingDetails.clear();
-		if(tbl_selected_rooms.getRowCount() == 0) {
+		if (tbl_selected_rooms.getRowCount() == 0) {
 			JOptionPane.showMessageDialog(null, "Danh sách hiện đang trống!");
-		}
-		else {
+		} else {
 			tbl_model_reservations.setRowCount(0);
 			String categoryName = "";
 			String checkin = "", checkout = "";
@@ -422,51 +437,42 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 				checkout = tbl_model_selected_rooms.getValueAt(i, 3).toString();
 				price = Double.parseDouble(tbl_model_selected_rooms.getValueAt(i, 4).toString());
 				discount = Float.parseFloat(tbl_model_selected_rooms.getValueAt(i, 5).toString());
-				
+
 				int categoryID = getCategoryID(categoryName);
 				Date checkinDate = null, checkoutDate = null;
 				try {
 					checkinDate = new SimpleDateFormat("dd/MM/yyyy").parse(checkin);
-					checkoutDate =new SimpleDateFormat("dd/MM/yyyy").parse(checkout);  
+					checkoutDate = new SimpleDateFormat("dd/MM/yyyy").parse(checkout);
 				} catch (ParseException e) {
 					e.printStackTrace();
-				} 
-				bookingDetails.add(new BookingDetail(checkinDate, checkoutDate, price, discount, 0, roomID, categoryID));
-				
-				int indexExist = getIndexExistInReservations(categoryName, checkin, checkout);
-				if(tbl_reservations.getRowCount() == 0) {
-					Object[] row = {
-						categoryName, 1,
-						checkin, checkout,
-						price, discount
-					};
-					tbl_model_reservations.addRow(row);
 				}
-				else {
-					if(isExistInReservations(categoryName, checkin, checkout)) {
+				bookingDetails
+						.add(new BookingDetail(checkinDate, checkoutDate, price, discount, 0, roomID, categoryID));
+
+				int indexExist = getIndexExistInReservations(categoryName, checkin, checkout);
+				if (tbl_reservations.getRowCount() == 0) {
+					Object[] row = { categoryName, 1, checkin, checkout, price, discount };
+					tbl_model_reservations.addRow(row);
+				} else {
+					if (isExistInReservations(categoryName, checkin, checkout)) {
 						int count = Integer.parseInt(tbl_model_reservations.getValueAt(indexExist, 1).toString());
 						double p = Double.parseDouble(tbl_model_reservations.getValueAt(indexExist, 4).toString());
 						float d = Float.parseFloat(tbl_model_reservations.getValueAt(indexExist, 5).toString());
-						
+
 						count += 1;
 						price += p;
 						discount += d;
 						tbl_model_reservations.setValueAt(count, indexExist, 1);
 						tbl_model_reservations.setValueAt(price, indexExist, 4);
 						tbl_model_reservations.setValueAt(discount, indexExist, 5);
-					}
-					else {
-						Object[] row = {
-							categoryName, 1,
-							checkin, checkout,
-							price, discount
-						};
+					} else {
+						Object[] row = { categoryName, 1, checkin, checkout, price, discount };
 						tbl_model_reservations.addRow(row);
 					}
 				}
-				
+
 			}
-			for(int i = 0; i < tbl_model_reservations.getRowCount(); i++) {
+			for (int i = 0; i < tbl_model_reservations.getRowCount(); i++) {
 				price = Double.parseDouble(tbl_model_reservations.getValueAt(i, 4).toString());
 				discount = Float.parseFloat(tbl_model_reservations.getValueAt(i, 5).toString());
 				subtotal += price * (1 - discount);
@@ -474,7 +480,7 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 			}
 		}
 	}
-	
+
 	private void deleteItemInReversations() {
 		int[] selectedRow = tbl_reservations.getSelectedRows();
 		if (tbl_model_reservations.getRowCount() != 0) {
@@ -490,16 +496,16 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 			JOptionPane.showMessageDialog(null, "Danh sách hiện đang trống!");
 		}
 	}
-	
+
 	private void checkPhoneOfCustomer() {
-		if(!txt_keywords.getText().trim().equals("")) {
+		if (!txt_keywords.getText().trim().equals("")) {
 			String keywords = txt_keywords.getText();
 			customer = getCustomer(keywords);
-			
-			if(customer == null) {
+
+			if (customer == null) {
 				int answer = JOptionPane.showConfirmDialog(null,
-						"Khách hàng này hiện không có trong danh sách, Bạn có muốn tạo mới khách hàng không?", "Thêm mới khách hàng",
-						JOptionPane.YES_NO_OPTION);
+						"Khách hàng này hiện không có trong danh sách, Bạn có muốn tạo mới khách hàng không?",
+						"Thêm mới khách hàng", JOptionPane.YES_NO_OPTION);
 				if (answer == JOptionPane.YES_OPTION) {
 					txt_first_name.setEnabled(true);
 					txt_middle_name.setEnabled(true);
@@ -515,21 +521,19 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 					txt_person_code.setEnabled(true);
 					dcs_date_of_birth.setEnabled(true);
 				}
-			}
-			else {
+			} else {
 				String customerName = "";
-				if(customer.getMiddleName().equals("")) {
+				if (customer.getMiddleName().equals("")) {
 					customerName = customer.getFirstName() + " " + customer.getLastName();
 				} else {
-					customerName = customer.getFirstName() + " " + customer.getMiddleName() + " " + customer.getLastName();
+					customerName = customer.getFirstName() + " " + customer.getMiddleName() + " "
+							+ customer.getLastName();
 				}
 				txt_name.setText(customerName);
 			}
-		}
-		else {
-			int answer = JOptionPane.showConfirmDialog(null,
-					"CMND không hợp lệ! Bạn có muốn tạo mới khách hàng không?", "Thêm mới khách hàng",
-					JOptionPane.YES_NO_OPTION);
+		} else {
+			int answer = JOptionPane.showConfirmDialog(null, "CMND không hợp lệ! Bạn có muốn tạo mới khách hàng không?",
+					"Thêm mới khách hàng", JOptionPane.YES_NO_OPTION);
 			if (answer == JOptionPane.YES_OPTION) {
 				txt_first_name.setEnabled(true);
 				txt_middle_name.setEnabled(true);
@@ -547,7 +551,7 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 			}
 		}
 	}
-	
+
 	private void createCustomer() {
 		String firstName = txt_first_name.getText().trim();
 		String middleName = txt_middle_name.getText().trim();
@@ -555,31 +559,61 @@ public class Pnl_SearchAndBooking extends JPanel implements ActionListener {
 		String email = txt_customer_email.getText().trim();
 		String address = txt_address.getText().trim();
 		String personCode = txt_person_code.getText().trim();
-		String gender = "";
-		if(rb_female.isSelected()) {
-			gender = "Nữ";
-		}
-		else {
-			gender = "Nam";
-		}
 		Date dateOfBirth = dcs_date_of_birth.getDate();
 		String phone = txt_customer_phone.getText().trim();
-		
-		Customer c = new Customer(firstName, middleName, lastName, gender, dateOfBirth, phone, address, email, null, personCode);
-		try {
-			cudao.insert(c);
-			JOptionPane.showMessageDialog(null, "Thêm mới khách hàng thành công!");
-			String customerName = "";
-			if(c.getMiddleName() == null) {
-				customerName = c.getFirstName() + " " + c.getLastName();
-			} else {
-				customerName = c.getFirstName() + " " + c.getMiddleName() + " " + c.getLastName();
-			}
-			txt_name.setText(customerName);
-		} catch (Exception e) {
-			e.printStackTrace();
+		String gender = "";
+		if (rb_female.isSelected()) {
+			gender = "Nữ";
+		} else {
+			gender = "Nam";
 		}
-		
+
+		if (!firstName.equals("") && !lastName.equals("") && !address.equals("")
+				&& ValidationService.validatePhone(phone) && ValidationService.validateEmail(email)
+				&& ValidationService.validatePersonCode(personCode)) {
+
+			Customer c = new Customer(firstName, middleName, lastName, gender, dateOfBirth, phone, address, email, null,
+					personCode);
+			try {
+				cudao.insert(c);
+				JOptionPane.showMessageDialog(null, "Thêm mới khách hàng thành công!");
+				String customerName = "";
+				if (c.getMiddleName() == null) {
+					customerName = c.getFirstName() + " " + c.getLastName();
+				} else {
+					customerName = c.getFirstName() + " " + c.getMiddleName() + " " + c.getLastName();
+				}
+				txt_first_name.setText("");
+				txt_middle_name.setText("");
+				txt_last_name.setText("");
+				txt_customer_phone.setText("");
+				txt_customer_email.setText("");
+				txt_address.setText("");
+				txt_person_code.setText("");
+				
+				txt_name.setText(customerName);
+				txt_first_name.setEnabled(false);
+				txt_middle_name.setEnabled(false);
+				txt_last_name.setEnabled(false);
+				txt_first_name.setEnabled(false);
+				rb_female.setEnabled(false);
+				rb_male.setEnabled(false);
+				dcs_date_of_birth.setEnabled(false);
+				txt_customer_phone.setEnabled(false);
+				txt_customer_email.setEnabled(false);
+				txt_address.setEnabled(false);
+				btn_customer_add.setEnabled(false);
+				txt_person_code.setEnabled(false);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if (firstName.equals("")) {
+			JOptionPane.showMessageDialog(null, "Họ không được để trống!", "Thông báo", JOptionPane.ERROR_MESSAGE);
+		} else if (lastName.equals("")) {
+			JOptionPane.showMessageDialog(null, "Tên không được để trống!", "Thông báo", JOptionPane.ERROR_MESSAGE);
+		} else if (address.equals("")) {
+			JOptionPane.showMessageDialog(null, "Địa chỉ không được để trống!", "Thông báo", JOptionPane.ERROR_MESSAGE);
+		}
 	}
-	
+
 }
