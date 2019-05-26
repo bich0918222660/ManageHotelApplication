@@ -152,7 +152,7 @@ public class Pnl_Booking extends JPanel {
 		b_button.add(Box.createHorizontalStrut(20));
 		b_button.add(btn_booking);
 		b_button.add(Box.createHorizontalStrut(10));
-		Box bv_table_button = BoxComponent.getVerticalBox(b_table, b_button, 10);
+		Box bv_table_button = BoxComponent.getVerticalBox(b_table, b_button, 5);
 		pnl_reservations.add(BoxComponent.getHorizontalBox(bv_table_button, 10));
 		Box bh_reservations = BoxComponent.getHorizontalBox(pnl_reservations, 10);
 		

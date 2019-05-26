@@ -1,3 +1,5 @@
-/ui/
+/dao/
 /driver/
-/ic_addcart.png
+/entity/
+/factory/
+/ui/

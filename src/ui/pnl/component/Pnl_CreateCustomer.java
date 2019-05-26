@@ -128,9 +128,9 @@ public class Pnl_CreateCustomer extends JPanel {
 		bv.add(b3);
 		bv.add(Box.createVerticalStrut(10));
 		bv.add(b_address);
-		bv.add(Box.createVerticalStrut(10));
+		bv.add(Box.createVerticalStrut(5));
 		bv.add(b5);
-		bv.add(Box.createVerticalStrut(10));
+		bv.add(Box.createVerticalStrut(5));
 		
 		this.add(bv);
 	}

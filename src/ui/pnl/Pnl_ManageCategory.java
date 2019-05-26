@@ -384,7 +384,7 @@ public class Pnl_ManageCategory extends JPanel implements ActionListener {
 			image = ImageIO.read(f);
 
 			// write
-			f = new File(System.getProperty("user.dir") + "\\ManageHotelApplication\\" + fileName);
+			f = new File(System.getProperty("user.dir") + "\\" + fileName);
 			System.out.println(path);
 			ImageIO.write(image, typeName, f);
 		} catch (IOException e) {

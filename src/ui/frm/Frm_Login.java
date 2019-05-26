@@ -96,10 +96,6 @@ public class Frm_Login extends JFrame implements ActionListener {
 		}
 		return null;
 	}
-	
-	public static void main(String[] args) {
-		new Frm_Login().setVisible(true);
-	}
 
 	public class Pnl_Login extends JPanel {
 
@@ -109,7 +105,8 @@ public class Frm_Login extends JFrame implements ActionListener {
 	        setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
 	        try
 	        {
-	        	image = ImageIO.read(Applet.class.getResourceAsStream("/bg.jpeg"));
+//	        	image = ImageIO.read(Applet.class.getResourceAsStream("/bg.jpeg"));
+	        	image = ImageIO.read(Frm_Login.class.getResourceAsStream("/bg.jpeg"));
 	        }
 	        catch(Exception e)
 	        {

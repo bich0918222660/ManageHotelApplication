@@ -163,8 +163,8 @@ public class Pnl_SearchRoom extends JPanel {
 		b_button.add(Box.createHorizontalStrut(10));
 		b_button.add(btn_add);
 		b_button.add(Box.createHorizontalStrut(10));
-		Box bh_selected_rooms = BoxComponent.getHorizontalBox(jsp_rooms, 10);
-		Box bv_selected_rooms = BoxComponent.getVerticalBox(bh_selected_rooms, b_button, 10);
+		Box bh_selected_rooms = BoxComponent.getHorizontalBox(jsp_rooms, 5);
+		Box bv_selected_rooms = BoxComponent.getVerticalBox(bh_selected_rooms, b_button, 5);
 		
 		pnl_selected_rooms.add(bv_selected_rooms);
 		

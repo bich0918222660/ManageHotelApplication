@@ -68,7 +68,7 @@ public class Frm_ReportAndStatistical extends JFrame implements ActionListener {
 	public Frm_ReportAndStatistical(Account account) {
 		setTitle("Thống kê và báo cáo - ^^!");
 		setLayout(new BorderLayout());
-		setSize(1200, 700);
+		setSize(1200, 800);
 		setResizable(false);
 		setLocationRelativeTo(null); // canh giua
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -420,10 +420,6 @@ public class Frm_ReportAndStatistical extends JFrame implements ActionListener {
 	private String getToDayFormat(Date date) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		return dateFormat.format(date);
-	}
-
-	public static void main(String[] args) {
-		new Frm_ReportAndStatistical(null).setVisible(true);
 	}
 	
 	private String convertDoubleToCurrency(double price) {

@@ -3,7 +3,9 @@ package ui.frm;
 import java.applet.Applet;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -51,13 +53,19 @@ public class Frm_ManageHotel_Admin extends JFrame implements ActionListener {
 	
 	public Frm_ManageHotel_Admin(Account account) {
 		setTitle("Khách sạn BN - ^^!");
-		setSize(1400, 1000);
+		setSize(1400, 900);
 		setResizable(false);
 		setLocationRelativeTo(null); // canh giua
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.account = account;
 		init();
 		gui();
+	}
+	
+	private ImageIcon getImageIcon(ImageIcon ic, int width, int height) {
+		Image image = ic.getImage(); // transform it 
+		Image newimg = image.getScaledInstance(40, 40,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+		return ic = new ImageIcon(newimg);
 	}
 	
 	private void init() {
@@ -69,62 +77,62 @@ public class Frm_ManageHotel_Admin extends JFrame implements ActionListener {
 		pnlBody.setBorder(BorderFactory.createTitledBorder(null, "", TitledBorder.LEFT, TitledBorder.TOP, fontSan, Color.BLACK));
 		
 		// JButton 
-//		btnBooking = new JButton(new ImageIcon("imgs/ic_booking.png"));
-		btnBooking = new JButton(new ImageIcon(this.getClass().getResource("/ic_booking.png")));
+		btnBooking = new JButton(getImageIcon(new ImageIcon(this.getClass().getResource("/ic_booking.png")), 40, 40));
 		btnBooking.setMargin(new Insets(0, 0, 0, 0));
 		btnBooking.setBorder(null);
 		btnBooking.addActionListener(this);
 		btnBooking.setBackground(Color.decode("#ebebeb"));
+		btnBooking.setSize(new Dimension(40, 40));
 		
-		btnManageBooking = new JButton(new ImageIcon(this.getClass().getResource("/ic_manage_booking.png")));
+		btnManageBooking = new JButton(getImageIcon(new ImageIcon(this.getClass().getResource("/ic_manage_booking.png")), 40, 40));
 		btnManageBooking.setMargin(new Insets(0, 0, 0, 0));
 		btnManageBooking.setBorder(null);
 		btnManageBooking.addActionListener(this);
 		btnManageBooking.setBackground(Color.decode("#ebebeb"));
 		
-		btnManagePayment = new JButton(new ImageIcon(this.getClass().getResource("/ic_manage_payment.png")));
+		btnManagePayment = new JButton(getImageIcon(new ImageIcon(this.getClass().getResource("/ic_manage_payment.png")), 40, 40));
 		btnManagePayment.setMargin(new Insets(0, 0, 0, 0));
 		btnManagePayment.setBorder(null);
 		btnManagePayment.addActionListener(this);
 		btnManagePayment.setBackground(Color.decode("#ebebeb"));
 		
-		btnManageCategory = new JButton(new ImageIcon(this.getClass().getResource("/ic_manage_category.png")));
+		btnManageCategory = new JButton(getImageIcon(new ImageIcon(this.getClass().getResource("/ic_manage_category.png")), 40, 40));
 		btnManageCategory.setMargin(new Insets(0, 0, 0, 0));
 		btnManageCategory.setBorder(null);
 		btnManageCategory.addActionListener(this);
 		btnManageCategory.setBackground(Color.decode("#ebebeb"));
 		
-		btnManageRoom = new JButton(new ImageIcon(this.getClass().getResource("/ic_manage_room.png")));
+		btnManageRoom = new JButton(getImageIcon(new ImageIcon(this.getClass().getResource("/ic_manage_room.png")), 40, 40));
 		btnManageRoom.setMargin(new Insets(0, 0, 0, 0));
 		btnManageRoom.setBorder(null);
 		btnManageRoom.addActionListener(this);
 		btnManageRoom.setBackground(Color.decode("#ebebeb"));
 		
-		btnReport = new JButton(new ImageIcon(this.getClass().getResource("/ic_report.png")));
+		btnReport = new JButton(getImageIcon(new ImageIcon(this.getClass().getResource("/ic_report.png")), 40, 40));
 		btnReport.setMargin(new Insets(0, 0, 0, 0));
 		btnReport.setBorder(null);
 		btnReport.addActionListener(this);
 		btnReport.setBackground(Color.decode("#ebebeb"));
 
-		btnManageCustomer = new JButton(new ImageIcon(this.getClass().getResource("/ic_manage_customer.png")));
+		btnManageCustomer = new JButton(getImageIcon(new ImageIcon(this.getClass().getResource("/ic_manage_customer.png")), 40, 40));
 		btnManageCustomer.setMargin(new Insets(0, 0, 0, 0));
 		btnManageCustomer.setBorder(null);
 		btnManageCustomer.addActionListener(this);
 		btnManageCustomer.setBackground(Color.decode("#ebebeb"));
 
-		btnManageEmployee = new JButton(new ImageIcon(this.getClass().getResource("/ic_manage_employee.png")));
+		btnManageEmployee = new JButton(getImageIcon(new ImageIcon(this.getClass().getResource("/ic_manage_employee.png")), 40, 40));
 		btnManageEmployee.setMargin(new Insets(0, 0, 0, 0));
 		btnManageEmployee.setBorder(null);
 		btnManageEmployee.addActionListener(this);
 		btnManageEmployee.setBackground(Color.decode("#ebebeb"));
 		
-		btnManageAccount = new JButton(new ImageIcon(this.getClass().getResource("/ic_manage_account.png")));
+		btnManageAccount = new JButton(getImageIcon(new ImageIcon(this.getClass().getResource("/ic_manage_account.png")), 40, 40));
 		btnManageAccount.setMargin(new Insets(0, 0, 0, 0));
 		btnManageAccount.setBorder(null);
 		btnManageAccount.addActionListener(this);
 		btnManageAccount.setBackground(Color.decode("#ebebeb"));
 
-		btnLogout = new JButton(new ImageIcon(this.getClass().getResource("/ic_logout.png")));
+		btnLogout = new JButton(getImageIcon(new ImageIcon(this.getClass().getResource("/ic_logout.png")), 40, 40));
 		btnLogout.setMargin(new Insets(0, 0, 0, 0));
 		btnLogout.setBorder(null);
 		btnLogout.addActionListener(this);
@@ -271,11 +279,6 @@ public class Frm_ManageHotel_Admin extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, "Bạn chưa được cấp quyền!");
 			}
 		}
-	}
-
-	
-	public static void main(String[] args) {
-		new Frm_ManageHotel_Admin(null).setVisible(true);
 	}
 
 }
